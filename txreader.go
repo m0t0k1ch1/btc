@@ -172,8 +172,23 @@ func (txr *TxReader) readVersion() (int32, error) {
 	return txr.readInt32()
 }
 
-func (txr *TxReader) readTxInLen() (uint, error) {
-	return txr.readVarInt()
+func (txr *TxReader) readTxIns() ([]*TxIn, error) {
+	txInCnt, err := txr.readVarInt()
+	if err != nil {
+		return nil, err
+	}
+
+	txIns := make([]*TxIn, txInCnt)
+	for i := 0; i < int(txInCnt); i++ {
+		txIn, err := txr.readTxIn()
+		if err != nil {
+			return nil, err
+		}
+
+		txIns[i] = txIn
+	}
+
+	return txIns, nil
 }
 
 func (txr *TxReader) readTxIn() (*TxIn, error) {
@@ -214,8 +229,23 @@ func (txr *TxReader) readTxIn() (*TxIn, error) {
 	return txin, nil
 }
 
-func (txr *TxReader) readTxOutLen() (uint, error) {
-	return txr.readVarInt()
+func (txr *TxReader) readTxOuts() ([]*TxOut, error) {
+	txOutCnt, err := txr.readVarInt()
+	if err != nil {
+		return nil, err
+	}
+
+	txOuts := make([]*TxOut, txOutCnt)
+	for i := 0; i < int(txOutCnt); i++ {
+		txOut, err := txr.readTxOut()
+		if err != nil {
+			return nil, err
+		}
+
+		txOuts[i] = txOut
+	}
+
+	return txOuts, nil
 }
 
 func (txr *TxReader) readTxOut() (*TxOut, error) {
@@ -253,34 +283,14 @@ func (txr *TxReader) ReadTx() (*Tx, error) {
 		return nil, err
 	}
 
-	txInCnt, err := txr.readTxInLen()
+	txIns, err := txr.readTxIns()
 	if err != nil {
 		return nil, err
 	}
 
-	txIns := make([]*TxIn, txInCnt)
-	for i := 0; i < int(txInCnt); i++ {
-		txIn, err := txr.readTxIn()
-		if err != nil {
-			return nil, err
-		}
-
-		txIns[i] = txIn
-	}
-
-	txOutCnt, err := txr.readTxOutLen()
+	txOuts, err := txr.readTxOuts()
 	if err != nil {
 		return nil, err
-	}
-
-	txOuts := make([]*TxOut, txOutCnt)
-	for i := 0; i < int(txOutCnt); i++ {
-		txOut, err := txr.readTxOut()
-		if err != nil {
-			return nil, err
-		}
-
-		txOuts[i] = txOut
 	}
 
 	lockTime, err := txr.readLockTime()
