@@ -3,13 +3,13 @@ package btctx
 type TxIn struct {
 	Hash            string `json:"hash"`
 	Index           uint32 `json:"index"`
-	SignatureScript string `json:"signatureScript"`
+	SignatureScript string `json:"signatureScript"` // hex
 	Sequence        uint32 `json:"sequence"`
 }
 
 type TxOut struct {
-	Value    int64  `json:"value"` // satoshi
-	PkScript string `json:"pkScript"`
+	Value    int64  `json:"value"`    // satoshi
+	PkScript string `json:"pkScript"` // hex
 }
 
 type Tx struct {
