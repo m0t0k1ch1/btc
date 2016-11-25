@@ -136,6 +136,8 @@ func (txr *TxReader) readUint64() (uint64, error) {
 	return data, nil
 }
 
+// variable length integer
+// ref. https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer
 func (txr *TxReader) readVarInt() (uint, error) {
 	head, err := txr.readByte()
 	if err != nil {
