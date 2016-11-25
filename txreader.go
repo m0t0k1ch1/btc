@@ -216,14 +216,33 @@ func (txr *TxReader) readTxOutLen() (uint, error) {
 	return txr.readVarInt()
 }
 
-// TODO
 func (txr *TxReader) readTxOut() (*TxOut, error) {
-	return &TxOut{}, nil
+	value, err := txr.readInt64()
+	if err != nil {
+		return nil, err
+	}
+
+	scriptLen, err := txr.readVarInt()
+	if err != nil {
+		return nil, err
+	}
+
+	script, err := txr.readString(int(scriptLen))
+	if err != nil {
+		return nil, err
+	}
+	script = fmt.Sprintf("%x", script)
+
+	txout := &TxOut{
+		Value:    value,
+		PkScript: script,
+	}
+
+	return txout, nil
 }
 
-// TODO
 func (txr *TxReader) readLockTime() (uint32, error) {
-	return 0, nil
+	return txr.readUint32()
 }
 
 func (txr *TxReader) ReadTx() (*Tx, error) {

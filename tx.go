@@ -8,8 +8,8 @@ type TxIn struct {
 }
 
 type TxOut struct {
-	Value  int64  `json:"value"`
-	Script string `json:"script"`
+	Value    int64  `json:"value"` // satoshi
+	PkScript string `json:"pkScript"`
 }
 
 type Tx struct {
