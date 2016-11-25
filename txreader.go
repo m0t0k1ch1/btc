@@ -175,11 +175,11 @@ func (txr *TxReader) readTxInLen() (uint, error) {
 }
 
 func (txr *TxReader) readTxIn() (*TxIn, error) {
-	txId, err := txr.readStringReverse(32)
+	hash, err := txr.readStringReverse(32)
 	if err != nil {
 		return nil, err
 	}
-	txId = fmt.Sprintf("%x", txId)
+	hash = fmt.Sprintf("%x", hash)
 
 	index, err := txr.readUint32()
 	if err != nil {
@@ -203,10 +203,10 @@ func (txr *TxReader) readTxIn() (*TxIn, error) {
 	}
 
 	txin := &TxIn{
-		TxId:      txId,
-		Index:     index,
-		Signature: signature,
-		Sequence:  sequence,
+		Hash:            hash,
+		Index:           index,
+		SignatureScript: signature,
+		Sequence:        sequence,
 	}
 
 	return txin, nil

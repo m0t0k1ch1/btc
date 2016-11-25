@@ -1,10 +1,10 @@
 package btctx
 
 type TxIn struct {
-	TxId      string `json:"txid"`
-	Index     uint32 `json:"index"`
-	Signature string `json:"signature"`
-	Sequence  uint32 `json:"sequence"`
+	Hash            string `json:"hash"`
+	Index           uint32 `json:"index"`
+	SignatureScript string `json:"signatureScript"`
+	Sequence        uint32 `json:"sequence"`
 }
 
 type TxOut struct {
@@ -14,9 +14,9 @@ type TxOut struct {
 
 type Tx struct {
 	Version  int32    `json:"version"`
-	TxIns    []*TxIn  `json:"txin"`
-	TxOuts   []*TxOut `json:"txout"`
-	LockTime uint32   `json:"locktime"`
+	TxIns    []*TxIn  `json:"txIns"`
+	TxOuts   []*TxOut `json:"txOuts"`
+	LockTime uint32   `json:"lockTime"`
 }
 
 func NewTxFromBytes(b []byte) (*Tx, error) {
