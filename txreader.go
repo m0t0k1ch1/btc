@@ -6,21 +6,21 @@ import (
 	"fmt"
 )
 
-type TxReader struct {
+type txReader struct {
 	r *bytes.Reader
 }
 
-func newTxReader(b []byte) *TxReader {
-	return &TxReader{
+func newTxReader(b []byte) *txReader {
+	return &txReader{
 		r: bytes.NewReader(b),
 	}
 }
 
-func (txr *TxReader) readByte() (byte, error) {
+func (txr *txReader) readByte() (byte, error) {
 	return txr.r.ReadByte()
 }
 
-func (txr *TxReader) readBytes(size int) ([]byte, error) {
+func (txr *txReader) readBytes(size int) ([]byte, error) {
 	data := make([]byte, size)
 
 	for i := 0; i < size; i++ {
@@ -35,7 +35,7 @@ func (txr *TxReader) readBytes(size int) ([]byte, error) {
 	return data, nil
 }
 
-func (txr *TxReader) readBytesReverse(size int) ([]byte, error) {
+func (txr *txReader) readBytesReverse(size int) ([]byte, error) {
 	data := make([]byte, size)
 
 	for i := size - 1; i >= 0; i-- {
@@ -50,7 +50,7 @@ func (txr *TxReader) readBytesReverse(size int) ([]byte, error) {
 	return data, nil
 }
 
-func (txr *TxReader) readString(size int) (string, error) {
+func (txr *txReader) readString(size int) (string, error) {
 	b, err := txr.readBytes(size)
 	if err != nil {
 		return "", err
@@ -59,7 +59,7 @@ func (txr *TxReader) readString(size int) (string, error) {
 	return string(b), nil
 }
 
-func (txr *TxReader) readStringReverse(size int) (string, error) {
+func (txr *txReader) readStringReverse(size int) (string, error) {
 	b, err := txr.readBytesReverse(size)
 	if err != nil {
 		return "", err
@@ -68,7 +68,7 @@ func (txr *TxReader) readStringReverse(size int) (string, error) {
 	return string(b), nil
 }
 
-func (txr *TxReader) readHex(size int) (string, error) {
+func (txr *txReader) readHex(size int) (string, error) {
 	s, err := txr.readString(size)
 	if err != nil {
 		return "", err
@@ -77,7 +77,7 @@ func (txr *TxReader) readHex(size int) (string, error) {
 	return fmt.Sprintf("%x", s), nil
 }
 
-func (txr *TxReader) readHexReverse(size int) (string, error) {
+func (txr *txReader) readHexReverse(size int) (string, error) {
 	s, err := txr.readStringReverse(size)
 	if err != nil {
 		return "", err
@@ -86,7 +86,7 @@ func (txr *TxReader) readHexReverse(size int) (string, error) {
 	return fmt.Sprintf("%x", s), nil
 }
 
-func (txr *TxReader) readBinary(size int, data interface{}) error {
+func (txr *txReader) readBinary(size int, data interface{}) error {
 	b, err := txr.readBytes(size)
 	if err != nil {
 		return err
@@ -100,7 +100,7 @@ func (txr *TxReader) readBinary(size int, data interface{}) error {
 	return nil
 }
 
-func (txr *TxReader) readInt16() (int16, error) {
+func (txr *txReader) readInt16() (int16, error) {
 	var data int16
 	if err := txr.readBinary(2, &data); err != nil {
 		return 0, err
@@ -109,7 +109,7 @@ func (txr *TxReader) readInt16() (int16, error) {
 	return data, nil
 }
 
-func (txr *TxReader) readInt32() (int32, error) {
+func (txr *txReader) readInt32() (int32, error) {
 	var data int32
 	if err := txr.readBinary(4, &data); err != nil {
 		return 0, err
@@ -118,7 +118,7 @@ func (txr *TxReader) readInt32() (int32, error) {
 	return data, nil
 }
 
-func (txr *TxReader) readInt64() (int64, error) {
+func (txr *txReader) readInt64() (int64, error) {
 	var data int64
 	if err := txr.readBinary(8, &data); err != nil {
 		return 0, err
@@ -127,7 +127,7 @@ func (txr *TxReader) readInt64() (int64, error) {
 	return data, nil
 }
 
-func (txr *TxReader) readUint16() (uint16, error) {
+func (txr *txReader) readUint16() (uint16, error) {
 	var data uint16
 	if err := txr.readBinary(2, &data); err != nil {
 		return 0, err
@@ -136,7 +136,7 @@ func (txr *TxReader) readUint16() (uint16, error) {
 	return data, nil
 }
 
-func (txr *TxReader) readUint32() (uint32, error) {
+func (txr *txReader) readUint32() (uint32, error) {
 	var data uint32
 	if err := txr.readBinary(4, &data); err != nil {
 		return 0, err
@@ -145,7 +145,7 @@ func (txr *TxReader) readUint32() (uint32, error) {
 	return data, nil
 }
 
-func (txr *TxReader) readUint64() (uint64, error) {
+func (txr *txReader) readUint64() (uint64, error) {
 	var data uint64
 	if err := txr.readBinary(8, &data); err != nil {
 		return 0, err
@@ -156,7 +156,7 @@ func (txr *TxReader) readUint64() (uint64, error) {
 
 // variable length integer
 // ref. https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer
-func (txr *TxReader) readVarInt() (uint, error) {
+func (txr *txReader) readVarInt() (uint, error) {
 	head, err := txr.readByte()
 	if err != nil {
 		return 0, err
@@ -186,11 +186,11 @@ func (txr *TxReader) readVarInt() (uint, error) {
 	}
 }
 
-func (txr *TxReader) readVersion() (int32, error) {
+func (txr *txReader) readVersion() (int32, error) {
 	return txr.readInt32()
 }
 
-func (txr *TxReader) readTxIns() ([]*TxIn, error) {
+func (txr *txReader) readTxIns() ([]*TxIn, error) {
 	txInCnt, err := txr.readVarInt()
 	if err != nil {
 		return nil, err
@@ -209,7 +209,7 @@ func (txr *TxReader) readTxIns() ([]*TxIn, error) {
 	return txIns, nil
 }
 
-func (txr *TxReader) readTxIn() (*TxIn, error) {
+func (txr *txReader) readTxIn() (*TxIn, error) {
 	hash, err := txr.readHexReverse(32)
 	if err != nil {
 		return nil, err
@@ -245,7 +245,7 @@ func (txr *TxReader) readTxIn() (*TxIn, error) {
 	return txin, nil
 }
 
-func (txr *TxReader) readTxOuts() ([]*TxOut, error) {
+func (txr *txReader) readTxOuts() ([]*TxOut, error) {
 	txOutCnt, err := txr.readVarInt()
 	if err != nil {
 		return nil, err
@@ -264,7 +264,7 @@ func (txr *TxReader) readTxOuts() ([]*TxOut, error) {
 	return txOuts, nil
 }
 
-func (txr *TxReader) readTxOut() (*TxOut, error) {
+func (txr *txReader) readTxOut() (*TxOut, error) {
 	value, err := txr.readInt64()
 	if err != nil {
 		return nil, err
@@ -288,11 +288,11 @@ func (txr *TxReader) readTxOut() (*TxOut, error) {
 	return txout, nil
 }
 
-func (txr *TxReader) readLockTime() (uint32, error) {
+func (txr *txReader) readLockTime() (uint32, error) {
 	return txr.readUint32()
 }
 
-func (txr *TxReader) read() (*Tx, error) {
+func (txr *txReader) read() (*Tx, error) {
 	version, err := txr.readVersion()
 	if err != nil {
 		return nil, err
