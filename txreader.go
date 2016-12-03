@@ -68,6 +68,24 @@ func (txr *TxReader) readStringReverse(size int) (string, error) {
 	return string(b), nil
 }
 
+func (txr *TxReader) readHex(size int) (string, error) {
+	s, err := txr.readString(size)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%x", s), nil
+}
+
+func (txr *TxReader) readHexReverse(size int) (string, error) {
+	s, err := txr.readStringReverse(size)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%x", s), nil
+}
+
 func (txr *TxReader) readBinary(size int, data interface{}) error {
 	b, err := txr.readBytes(size)
 	if err != nil {
@@ -192,29 +210,27 @@ func (txr *TxReader) readTxIns() ([]*TxIn, error) {
 }
 
 func (txr *TxReader) readTxIn() (*TxIn, error) {
-	hash, err := txr.readStringReverse(32)
+	hash, err := txr.readHexReverse(32)
 	if err != nil {
 		return nil, err
 	}
-	hash = fmt.Sprintf("%x", hash)
 
 	index, err := txr.readUint32()
 	if err != nil {
 		return nil, err
 	}
 
-	signatureLen, err := txr.readVarInt()
+	sigScriptLen, err := txr.readVarInt()
 	if err != nil {
 		return nil, err
 	}
 
-	signature, err := txr.readString(int(signatureLen))
+	sigScript, err := txr.readHex(int(sigScriptLen))
 	if err != nil {
 		return nil, err
 	}
-	signature = fmt.Sprintf("%x", signature)
 
-	sequence, err := txr.readUint32()
+	seq, err := txr.readUint32()
 	if err != nil {
 		return nil, err
 	}
@@ -222,8 +238,8 @@ func (txr *TxReader) readTxIn() (*TxIn, error) {
 	txin := &TxIn{
 		Hash:            hash,
 		Index:           index,
-		SignatureScript: signature,
-		Sequence:        sequence,
+		SignatureScript: sigScript,
+		Sequence:        seq,
 	}
 
 	return txin, nil
@@ -254,20 +270,19 @@ func (txr *TxReader) readTxOut() (*TxOut, error) {
 		return nil, err
 	}
 
-	scriptLen, err := txr.readVarInt()
+	pkScriptLen, err := txr.readVarInt()
 	if err != nil {
 		return nil, err
 	}
 
-	script, err := txr.readString(int(scriptLen))
+	pkScript, err := txr.readHex(int(pkScriptLen))
 	if err != nil {
 		return nil, err
 	}
-	script = fmt.Sprintf("%x", script)
 
 	txout := &TxOut{
 		Value:    value,
-		PkScript: script,
+		PkScript: pkScript,
 	}
 
 	return txout, nil
