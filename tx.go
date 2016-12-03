@@ -1,5 +1,12 @@
 package btctx
 
+type Tx struct {
+	Version  int32    `json:"version"`
+	TxIns    []*TxIn  `json:"txIns"`
+	TxOuts   []*TxOut `json:"txOuts"`
+	LockTime uint32   `json:"lockTime"`
+}
+
 type TxIn struct {
 	Hash            string `json:"hash"`
 	Index           uint32 `json:"index"`
@@ -12,11 +19,10 @@ type TxOut struct {
 	PkScript string `json:"pkScript"` // hex
 }
 
-type Tx struct {
-	Version  int32    `json:"version"`
-	TxIns    []*TxIn  `json:"txIns"`
-	TxOuts   []*TxOut `json:"txOuts"`
-	LockTime uint32   `json:"lockTime"`
+func (tx *Tx) ToBytes() ([]byte, error) {
+	txw := NewTxWriter(tx)
+
+	return txw.WriteTx()
 }
 
 func NewTxFromBytes(b []byte) (*Tx, error) {
