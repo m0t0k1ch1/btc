@@ -10,7 +10,7 @@ type TxReader struct {
 	r *bytes.Reader
 }
 
-func NewTxReader(b []byte) *TxReader {
+func newTxReader(b []byte) *TxReader {
 	return &TxReader{
 		r: bytes.NewReader(b),
 	}
@@ -292,7 +292,7 @@ func (txr *TxReader) readLockTime() (uint32, error) {
 	return txr.readUint32()
 }
 
-func (txr *TxReader) ReadTx() (*Tx, error) {
+func (txr *TxReader) read() (*Tx, error) {
 	version, err := txr.readVersion()
 	if err != nil {
 		return nil, err

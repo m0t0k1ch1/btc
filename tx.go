@@ -13,9 +13,9 @@ type Tx struct {
 }
 
 func NewTxFromBytes(b []byte) (*Tx, error) {
-	txr := NewTxReader(b)
+	txr := newTxReader(b)
 
-	return txr.ReadTx()
+	return txr.read()
 }
 
 func (tx *Tx) ToBytes() ([]byte, error) {
