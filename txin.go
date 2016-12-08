@@ -25,14 +25,14 @@ func NewTxIn() *TxIn {
 
 func (txIn *TxIn) ToBytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
-	if err := txIn.Write(buf); err != nil {
+	if err := txIn.WriteAll(buf); err != nil {
 		return nil, err
 	}
 
 	return buf.Bytes(), nil
 }
 
-func (txIn *TxIn) Write(w io.Writer) error {
+func (txIn *TxIn) WriteAll(w io.Writer) error {
 	if err := txIn.WriteHash(w); err != nil {
 		return err
 	}

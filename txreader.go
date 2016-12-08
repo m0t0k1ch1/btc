@@ -292,7 +292,7 @@ func (txr *txReader) readLockTime() (uint32, error) {
 	return txr.readUint32()
 }
 
-func (txr *txReader) read() (*Tx, error) {
+func (txr *txReader) readAll() (*Tx, error) {
 	version, err := txr.readVersion()
 	if err != nil {
 		return nil, err

@@ -37,7 +37,7 @@ func NewTxFromHex(s string) (*Tx, error) {
 func NewTxFromBytes(b []byte) (*Tx, error) {
 	txr := newTxReader(b)
 
-	return txr.read()
+	return txr.readAll()
 }
 
 func (tx *Tx) AddTxIn(txIn *TxIn) {
@@ -50,14 +50,14 @@ func (tx *Tx) AddTxOut(txOut *TxOut) {
 
 func (tx *Tx) ToBytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
-	if err := tx.Write(buf); err != nil {
+	if err := tx.WriteAll(buf); err != nil {
 		return nil, err
 	}
 
 	return buf.Bytes(), nil
 }
 
-func (tx *Tx) Write(w io.Writer) error {
+func (tx *Tx) WriteAll(w io.Writer) error {
 	if err := tx.WriteVersion(w); err != nil {
 		return err
 	}
@@ -95,7 +95,7 @@ func (tx *Tx) WriteTxInCount(w io.Writer) error {
 
 func (tx *Tx) WriteTxIns(w io.Writer) error {
 	for _, txIn := range tx.TxIns {
-		if err := txIn.Write(w); err != nil {
+		if err := txIn.WriteAll(w); err != nil {
 			return err
 		}
 	}
@@ -109,7 +109,7 @@ func (tx *Tx) WriteTxOutCount(w io.Writer) error {
 
 func (tx *Tx) WriteTxOuts(w io.Writer) error {
 	for _, txOut := range tx.TxOuts {
-		if err := txOut.Write(w); err != nil {
+		if err := txOut.WriteAll(w); err != nil {
 			return err
 		}
 	}

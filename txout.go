@@ -17,14 +17,14 @@ func NewTxOut() *TxOut {
 
 func (txOut *TxOut) ToBytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
-	if err := txOut.Write(buf); err != nil {
+	if err := txOut.WriteAll(buf); err != nil {
 		return nil, err
 	}
 
 	return buf.Bytes(), nil
 }
 
-func (txOut *TxOut) Write(w io.Writer) error {
+func (txOut *TxOut) WriteAll(w io.Writer) error {
 	if err := txOut.WriteValue(w); err != nil {
 		return err
 	}
