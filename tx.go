@@ -2,6 +2,7 @@ package btctx
 
 import (
 	"bytes"
+	"encoding/hex"
 	"io"
 )
 
@@ -22,6 +23,15 @@ func NewTx() *Tx {
 		Version:  DefaultTxVersion,
 		LockTime: DefaultTxLockTime,
 	}
+}
+
+func NewTxFromHex(s string) (*Tx, error) {
+	b, err := hex.DecodeString(s)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewTxFromBytes(b)
 }
 
 func NewTxFromBytes(b []byte) (*Tx, error) {
