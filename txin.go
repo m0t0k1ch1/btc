@@ -15,59 +15,58 @@ type TxIn struct {
 
 func (txIn *TxIn) ToBytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
-	if err := txIn.write(buf); err != nil {
+	if err := txIn.Write(buf); err != nil {
 		return nil, err
 	}
 
 	return buf.Bytes(), nil
 }
 
-func (txIn *TxIn) write(w io.Writer) error {
-	if err := txIn.writeHash(w); err != nil {
+func (txIn *TxIn) Write(w io.Writer) error {
+	if err := txIn.WriteHash(w); err != nil {
 		return err
 	}
 
-	if err := txIn.writeIndex(w); err != nil {
+	if err := txIn.WriteIndex(w); err != nil {
 		return err
 	}
 
-	if err := txIn.writeSignatureScript(w); err != nil {
+	if err := txIn.WriteSignatureScriptLength(w); err != nil {
 		return err
 	}
 
-	if err := txIn.writeSequence(w); err != nil {
+	if err := txIn.WriteSignatureScript(w); err != nil {
+		return err
+	}
+
+	if err := txIn.WriteSequence(w); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (txIn *TxIn) writeHash(w io.Writer) error {
+func (txIn *TxIn) WriteHash(w io.Writer) error {
 	return writeHexReverse(w, txIn.Hash)
 }
 
-func (txIn *TxIn) writeIndex(w io.Writer) error {
+func (txIn *TxIn) WriteIndex(w io.Writer) error {
 	return writeData(w, txIn.Index)
 }
 
-func (txIn *TxIn) writeSignatureScript(w io.Writer) error {
-	s := txIn.SignatureScript
-
-	b, err := hex.DecodeString(s)
+func (txIn *TxIn) WriteSignatureScriptLength(w io.Writer) error {
+	b, err := hex.DecodeString(txIn.SignatureScript)
 	if err != nil {
 		return err
 	}
 
-	if err := writeVarInt(w, len(b)); err != nil {
-		return err
-	}
-	if err := writeHex(w, s); err != nil {
-		return err
-	}
-
-	return nil
+	return writeVarInt(w, len(b))
 }
 
-func (txIn *TxIn) writeSequence(w io.Writer) error {
+func (txIn *TxIn) WriteSignatureScript(w io.Writer) error {
+	return writeHex(w, txIn.SignatureScript)
+}
+
+func (txIn *TxIn) WriteSequence(w io.Writer) error {
 	return writeData(w, txIn.Sequence)
 }
