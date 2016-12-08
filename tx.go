@@ -5,6 +5,11 @@ import (
 	"io"
 )
 
+const (
+	DefaultTxVersion  int32  = 1
+	DefaultTxLockTime uint32 = 0
+)
+
 type Tx struct {
 	Version  int32    `json:"version"`
 	TxIns    []*TxIn  `json:"txIns"`
@@ -12,10 +17,25 @@ type Tx struct {
 	LockTime uint32   `json:"lockTime"`
 }
 
+func NewTx() *Tx {
+	return &Tx{
+		Version:  DefaultTxVersion,
+		LockTime: DefaultTxLockTime,
+	}
+}
+
 func NewTxFromBytes(b []byte) (*Tx, error) {
 	txr := newTxReader(b)
 
 	return txr.read()
+}
+
+func (tx *Tx) AddTxIn(txIn *TxIn) {
+	tx.TxIns = append(tx.TxIns, txIn)
+}
+
+func (tx *Tx) AddTxOut(txOut *TxOut) {
+	tx.TxOuts = append(tx.TxOuts, txOut)
 }
 
 func (tx *Tx) ToBytes() ([]byte, error) {

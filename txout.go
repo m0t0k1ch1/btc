@@ -11,6 +11,10 @@ type TxOut struct {
 	PkScript string `json:"pkScript"` // hex
 }
 
+func NewTxOut() *TxOut {
+	return &TxOut{}
+}
+
 func (txOut *TxOut) ToBytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
 	if err := txOut.Write(buf); err != nil {

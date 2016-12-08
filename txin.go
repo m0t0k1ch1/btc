@@ -6,11 +6,21 @@ import (
 	"io"
 )
 
+const (
+	DefaultTxInSequence uint32 = 4294967295
+)
+
 type TxIn struct {
 	Hash            string `json:"hash"`
 	Index           uint32 `json:"index"`
 	SignatureScript string `json:"signatureScript"` // hex
 	Sequence        uint32 `json:"sequence"`
+}
+
+func NewTxIn() *TxIn {
+	return &TxIn{
+		Sequence: DefaultTxInSequence,
+	}
 }
 
 func (txIn *TxIn) ToBytes() ([]byte, error) {
