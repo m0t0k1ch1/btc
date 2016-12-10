@@ -57,6 +57,15 @@ func (tx *Tx) ToBytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func (tx *Tx) ToHex() (string, error) {
+	b, err := tx.ToBytes()
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(b), nil
+}
+
 func (tx *Tx) WriteAll(w io.Writer) error {
 	if err := tx.WriteVersion(w); err != nil {
 		return err
