@@ -24,6 +24,15 @@ func (txOut *TxOut) ToBytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func (txOut *TxOut) ToHex() (string, error) {
+	b, err := txOut.ToBytes()
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(b), nil
+}
+
 func (txOut *TxOut) WriteAll(w io.Writer) error {
 	if err := txOut.WriteValue(w); err != nil {
 		return err

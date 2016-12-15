@@ -32,6 +32,15 @@ func (txIn *TxIn) ToBytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
+func (txIn *TxIn) ToHex() (string, error) {
+	b, err := txIn.ToBytes()
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(b), nil
+}
+
 func (txIn *TxIn) WriteAll(w io.Writer) error {
 	if err := txIn.WriteHash(w); err != nil {
 		return err
