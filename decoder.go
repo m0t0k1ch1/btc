@@ -3,7 +3,7 @@ package btctx
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
+	"encoding/hex"
 )
 
 type decoder struct {
@@ -22,10 +22,11 @@ func (d *decoder) readByte() (byte, error) {
 	return d.reader.ReadByte()
 }
 
-func (d *decoder) readBytes(size int) ([]byte, error) {
+func (d *decoder) readBytes(size uint) ([]byte, error) {
 	data := make([]byte, size)
 
-	for i := 0; i < size; i++ {
+	var i uint
+	for i = 0; i < size; i++ {
 		b, err := d.readByte()
 		if err != nil {
 			return nil, err
@@ -37,22 +38,23 @@ func (d *decoder) readBytes(size int) ([]byte, error) {
 	return data, nil
 }
 
-func (d *decoder) readBytesReverse(size int) ([]byte, error) {
+func (d *decoder) readBytesReverse(size uint) ([]byte, error) {
 	data := make([]byte, size)
 
-	for i := size - 1; i >= 0; i-- {
+	var i uint
+	for i = 1; i <= size; i++ {
 		b, err := d.readByte()
 		if err != nil {
 			return nil, err
 		}
 
-		data[i] = b
+		data[size-i] = b
 	}
 
 	return data, nil
 }
 
-func (d *decoder) readString(size int) (string, error) {
+func (d *decoder) readString(size uint) (string, error) {
 	b, err := d.readBytes(size)
 	if err != nil {
 		return "", err
@@ -61,7 +63,7 @@ func (d *decoder) readString(size int) (string, error) {
 	return string(b), nil
 }
 
-func (d *decoder) readStringReverse(size int) (string, error) {
+func (d *decoder) readStringReverse(size uint) (string, error) {
 	b, err := d.readBytesReverse(size)
 	if err != nil {
 		return "", err
@@ -70,25 +72,25 @@ func (d *decoder) readStringReverse(size int) (string, error) {
 	return string(b), nil
 }
 
-func (d *decoder) readHex(size int) (string, error) {
-	s, err := d.readString(size)
+func (d *decoder) readHex(size uint) (string, error) {
+	b, err := d.readBytes(size)
 	if err != nil {
 		return "", err
 	}
 
-	return fmt.Sprintf("%x", s), nil
+	return hex.EncodeToString(b), nil
 }
 
-func (d *decoder) readHexReverse(size int) (string, error) {
-	s, err := d.readStringReverse(size)
+func (d *decoder) readHexReverse(size uint) (string, error) {
+	b, err := d.readBytesReverse(size)
 	if err != nil {
 		return "", err
 	}
 
-	return fmt.Sprintf("%x", s), nil
+	return hex.EncodeToString(b), nil
 }
 
-func (d *decoder) readBinary(size int, data interface{}) error {
+func (d *decoder) readBinary(size uint, data interface{}) error {
 	b, err := d.readBytes(size)
 	if err != nil {
 		return err

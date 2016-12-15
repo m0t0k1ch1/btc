@@ -47,7 +47,7 @@ func (txd *txDecoder) decodeTxIn() (*TxIn, error) {
 		return nil, err
 	}
 
-	sigScriptHex, err := txd.readHex(int(sigScriptLen))
+	sigScriptHex, err := txd.readHex(sigScriptLen)
 	if err != nil {
 		return nil, err
 	}
@@ -99,7 +99,7 @@ func (txd *txDecoder) decodeTxOut() (*TxOut, error) {
 		return nil, err
 	}
 
-	pkScriptHex, err := txd.readHex(int(pkScriptLen))
+	pkScriptHex, err := txd.readHex(pkScriptLen)
 	if err != nil {
 		return nil, err
 	}
