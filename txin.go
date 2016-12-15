@@ -11,10 +11,10 @@ const (
 )
 
 type TxIn struct {
-	Hash            string `json:"hash"`
-	Index           uint32 `json:"index"`
-	SignatureScript string `json:"signatureScript"` // hex
-	Sequence        uint32 `json:"sequence"`
+	Hash      string  `json:"hash"`
+	Index     uint32  `json:"index"`
+	SigScript *Script `json:"sigScript"`
+	Sequence  uint32  `json:"sequence"`
 }
 
 func NewTxIn() *TxIn {
@@ -41,11 +41,11 @@ func (txIn *TxIn) WriteAll(w io.Writer) error {
 		return err
 	}
 
-	if err := txIn.WriteSignatureScriptLength(w); err != nil {
+	if err := txIn.WriteSigScriptLength(w); err != nil {
 		return err
 	}
 
-	if err := txIn.WriteSignatureScript(w); err != nil {
+	if err := txIn.WriteSigScript(w); err != nil {
 		return err
 	}
 
@@ -64,8 +64,8 @@ func (txIn *TxIn) WriteIndex(w io.Writer) error {
 	return writeData(w, txIn.Index)
 }
 
-func (txIn *TxIn) WriteSignatureScriptLength(w io.Writer) error {
-	b, err := hex.DecodeString(txIn.SignatureScript)
+func (txIn *TxIn) WriteSigScriptLength(w io.Writer) error {
+	b, err := hex.DecodeString(txIn.SigScript.Hex)
 	if err != nil {
 		return err
 	}
@@ -73,8 +73,8 @@ func (txIn *TxIn) WriteSignatureScriptLength(w io.Writer) error {
 	return writeVarInt(w, len(b))
 }
 
-func (txIn *TxIn) WriteSignatureScript(w io.Writer) error {
-	return writeHex(w, txIn.SignatureScript)
+func (txIn *TxIn) WriteSigScript(w io.Writer) error {
+	return writeHex(w, txIn.SigScript.Hex)
 }
 
 func (txIn *TxIn) WriteSequence(w io.Writer) error {

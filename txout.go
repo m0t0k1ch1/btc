@@ -7,8 +7,8 @@ import (
 )
 
 type TxOut struct {
-	Value    int64  `json:"value"`    // satoshi
-	PkScript string `json:"pkScript"` // hex
+	Value    int64   `json:"value"`
+	PkScript *Script `json:"pkScript"`
 }
 
 func NewTxOut() *TxOut {
@@ -45,7 +45,7 @@ func (txOut *TxOut) WriteValue(w io.Writer) error {
 }
 
 func (txOut *TxOut) WritePkScriptLength(w io.Writer) error {
-	b, err := hex.DecodeString(txOut.PkScript)
+	b, err := hex.DecodeString(txOut.PkScript.Hex)
 	if err != nil {
 		return err
 	}
@@ -54,5 +54,5 @@ func (txOut *TxOut) WritePkScriptLength(w io.Writer) error {
 }
 
 func (txOut *TxOut) WritePkScript(w io.Writer) error {
-	return writeHex(w, txOut.PkScript)
+	return writeHex(w, txOut.PkScript.Hex)
 }

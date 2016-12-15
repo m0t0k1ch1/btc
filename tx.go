@@ -35,9 +35,9 @@ func NewTxFromHex(s string) (*Tx, error) {
 }
 
 func NewTxFromBytes(b []byte) (*Tx, error) {
-	txr := newTxReader(b)
+	txd := newTxDecoder(b)
 
-	return txr.readAll()
+	return txd.decode()
 }
 
 func (tx *Tx) AddTxIn(txIn *TxIn) {
