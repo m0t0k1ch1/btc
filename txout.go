@@ -11,8 +11,16 @@ type TxOut struct {
 	PkScript *Script `json:"pkScript"`
 }
 
-func NewTxOut() *TxOut {
-	return &TxOut{}
+func NewTxOut(value int64, PkScriptHex string) (*TxOut, error) {
+	pkScript, err := NewScriptFromHex(PkScriptHex)
+	if err != nil {
+		return nil, err
+	}
+
+	return &TxOut{
+		Value:    value,
+		PkScript: pkScript,
+	}, nil
 }
 
 func (txOut *TxOut) ToBytes() ([]byte, error) {

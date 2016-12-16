@@ -17,10 +17,18 @@ type TxIn struct {
 	Sequence  uint32  `json:"sequence"`
 }
 
-func NewTxIn() *TxIn {
-	return &TxIn{
-		Sequence: DefaultTxInSequence,
+func NewTxIn(hash string, index uint32, sigScriptHex string) (*TxIn, error) {
+	sigScript, err := NewScriptFromHex(sigScriptHex)
+	if err != nil {
+		return nil, err
 	}
+
+	return &TxIn{
+		Hash:      hash,
+		Index:     index,
+		SigScript: sigScript,
+		Sequence:  DefaultTxInSequence,
+	}, nil
 }
 
 func (txIn *TxIn) ToBytes() ([]byte, error) {
