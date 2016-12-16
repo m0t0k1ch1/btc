@@ -14,7 +14,7 @@ func writeData(w io.Writer, data interface{}) error {
 // ref. https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer
 func writeVarInt(w io.Writer, data int) error {
 	if data < 0xfd {
-		return writeData(w, uint8(data))
+		return writeData(w, byte(data))
 	} else if data <= 0xffff {
 		return writeData(w, uint16(data))
 	} else if data <= 0xffffffff {
