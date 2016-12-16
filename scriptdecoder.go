@@ -24,39 +24,48 @@ func (sd *scriptDecoder) decodeOP() (OP, error) {
 	return OP(b), nil
 }
 
-func (sd *scriptDecoder) decodePushData(op OP) (string, error) {
+func (sd *scriptDecoder) decodePushData(op OP) ([]string, error) {
+	parts := []string{}
 	var len uint
 
 	switch op {
 	case OP_PUSHDATA1:
+		parts = append(parts, opCodeMap[OP_PUSHDATA1])
 		len8, err := sd.readByte()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		len = uint(len8)
 	case OP_PUSHDATA2:
+		parts = append(parts, opCodeMap[OP_PUSHDATA2])
 		len16, err := sd.readUint16()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		len = uint(len16)
 	case OP_PUSHDATA4:
+		parts = append(parts, opCodeMap[OP_PUSHDATA4])
 		len32, err := sd.readUint32()
 		if err != nil {
-			return "", err
+			return nil, err
 		}
 		len = uint(len32)
 	default:
 		len = uint(op)
 	}
 
-	return sd.readHex(len)
+	data, err := sd.readHex(len)
+	if err != nil {
+		return nil, err
+	}
+
+	return append(parts, data), nil
 }
 
-func (sd *scriptDecoder) decodePart() (string, error) {
+func (sd *scriptDecoder) decodePart() ([]string, error) {
 	op, err := sd.decodeOP()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if op.isPushData() {
@@ -65,17 +74,17 @@ func (sd *scriptDecoder) decodePart() (string, error) {
 
 	opCode, ok := opCodeMap[op]
 	if !ok {
-		return "", fmt.Errorf("unknown operation code")
+		return nil, fmt.Errorf("unknown operation code")
 	}
 
-	return opCode, nil
+	return []string{opCode}, nil
 }
 
 func (sd *scriptDecoder) decode() (*Script, error) {
 	parts := []string{}
 
 	for {
-		part, err := sd.decodePart()
+		p, err := sd.decodePart()
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -83,7 +92,7 @@ func (sd *scriptDecoder) decode() (*Script, error) {
 			return nil, err
 		}
 
-		parts = append(parts, part)
+		parts = append(parts, p...)
 	}
 
 	return &Script{
