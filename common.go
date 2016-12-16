@@ -12,7 +12,7 @@ func writeData(w io.Writer, data interface{}) error {
 
 // variable length integer
 // ref. https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer
-func writeVarInt(w io.Writer, data int) error {
+func writeVarInt(w io.Writer, data uint) error {
 	if data < 0xfd {
 		return writeData(w, byte(data))
 	} else if data <= 0xffff {

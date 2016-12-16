@@ -99,7 +99,7 @@ func (tx *Tx) WriteVersion(w io.Writer) error {
 }
 
 func (tx *Tx) WriteTxInCount(w io.Writer) error {
-	return writeVarInt(w, len(tx.TxIns))
+	return writeVarInt(w, uint(len(tx.TxIns)))
 }
 
 func (tx *Tx) WriteTxIns(w io.Writer) error {
@@ -113,7 +113,7 @@ func (tx *Tx) WriteTxIns(w io.Writer) error {
 }
 
 func (tx *Tx) WriteTxOutCount(w io.Writer) error {
-	return writeVarInt(w, len(tx.TxOuts))
+	return writeVarInt(w, uint(len(tx.TxOuts)))
 }
 
 func (tx *Tx) WriteTxOuts(w io.Writer) error {

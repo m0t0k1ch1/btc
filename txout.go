@@ -59,7 +59,7 @@ func (txOut *TxOut) WritePkScriptLength(w io.Writer) error {
 		return err
 	}
 
-	return writeVarInt(w, len(b))
+	return writeVarInt(w, uint(len(b)))
 }
 
 func (txOut *TxOut) WritePkScript(w io.Writer) error {

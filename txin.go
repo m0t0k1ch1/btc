@@ -79,7 +79,7 @@ func (txIn *TxIn) WriteSigScriptLength(w io.Writer) error {
 		return err
 	}
 
-	return writeVarInt(w, len(b))
+	return writeVarInt(w, uint(len(b)))
 }
 
 func (txIn *TxIn) WriteSigScript(w io.Writer) error {
