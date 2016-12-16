@@ -4,6 +4,10 @@
 
 a package for mapping [bitcoin transaction](https://en.bitcoin.it/wiki/Protocol_documentation#tx) and golang struct
 
+``` sh
+$ go get github.com/m0t0k1ch1/btctx
+```
+
 ## Example
 
 ``` go
