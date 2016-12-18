@@ -10,6 +10,7 @@ import (
 func TestTxMapping(t *testing.T) {
 	UseTestnet()
 
+	txidOrigin := "d7a4684b71776c8c96edd670a9d0c61d03c293f4c6266b70ff5030b2c4f0bdfe"
 	txHexOrigin := "0100000001ce3cf2e2b334e7e9fa84619469d9edc49368c2f752ea30fb48b080fc794f6d56010000006a473044022065fe1ea4e94a9b44fb62c2b874b63a947504273a60b99b8f7bbf77b4db9331b002205559d8ee93cf341d75866f9eb912af05904fb6eed7372a837308c4e37f3ab58f012103bae5f04799c40862358560e42e441c3080b997a3dec161dd40395e992362bfc9feffffff0200f2052a010000001976a914cbc222711a230ecdd9a5aa65b61ed39c24db2b3488acc08d931a1d0000001976a914426c1ad9fa94f9ea3e6f9248b8bff6768e3ac8c488ac951a1000"
 
 	tx, err := NewTxFromHex(txHexOrigin)
@@ -32,6 +33,10 @@ func TestTxMapping(t *testing.T) {
 	txOut1 := tx.TxOuts[1]
 	assert.Equal(t, txOut1.Value, int64(124999929280))
 	assert.Equal(t, txOut1.PkScript.Hex, "76a914426c1ad9fa94f9ea3e6f9248b8bff6768e3ac8c488ac")
+
+	txid, err := tx.ToHash()
+	require.NoError(t, err)
+	assert.Equal(t, txid, txidOrigin)
 
 	txHex, err := tx.ToHex()
 	require.NoError(t, err)

@@ -66,6 +66,26 @@ func (tx *Tx) ToHex() (string, error) {
 	return hex.EncodeToString(b), nil
 }
 
+func (tx *Tx) ToHash() (string, error) {
+	txBytes, err := tx.ToBytes()
+	if err != nil {
+		return "", err
+	}
+
+	hashBytes, err := sha256Double(txBytes)
+	if err != nil {
+		return "", err
+	}
+	hashBytesLen := len(hashBytes)
+
+	buf := &bytes.Buffer{}
+	for i := 1; i <= hashBytesLen; i++ {
+		buf.WriteByte(hashBytes[hashBytesLen-i])
+	}
+
+	return hex.EncodeToString(buf.Bytes()), nil
+}
+
 func (tx *Tx) WriteAll(w io.Writer) error {
 	if err := tx.WriteVersion(w); err != nil {
 		return err
