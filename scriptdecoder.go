@@ -81,10 +81,10 @@ func (sd *scriptDecoder) decodePart() ([]string, error) {
 }
 
 func (sd *scriptDecoder) decode() (*Script, error) {
-	parts := []string{}
+	sps := scriptParts{}
 
 	for {
-		p, err := sd.decodePart()
+		parts, err := sd.decodePart()
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -92,11 +92,14 @@ func (sd *scriptDecoder) decode() (*Script, error) {
 			return nil, err
 		}
 
-		parts = append(parts, p...)
+		sps = append(sps, parts...)
 	}
 
+	addresses, _ := sps.extractAddresses()
+
 	return &Script{
-		Hex: hex.EncodeToString(sd.data),
-		Asm: strings.Join(parts, " "),
+		Hex:       hex.EncodeToString(sd.data),
+		Asm:       strings.Join(sps, " "),
+		Addresses: addresses,
 	}, nil
 }

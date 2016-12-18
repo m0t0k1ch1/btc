@@ -1,10 +1,29 @@
 package btctx
 
 import (
+	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
 	"io"
 )
+
+var IsTestNet = false
+
+func sha256Double(b []byte) ([]byte, error) {
+	h := sha256.New()
+	if _, err := h.Write(b); err != nil {
+		return nil, err
+	}
+
+	tmp := h.Sum(nil)
+
+	h.Reset()
+	if _, err := h.Write(tmp); err != nil {
+		return nil, err
+	}
+
+	return h.Sum(nil), nil
+}
 
 func writeData(w io.Writer, data interface{}) error {
 	return binary.Write(w, binary.LittleEndian, data)
