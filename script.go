@@ -26,7 +26,8 @@ func NewScriptFromBytes(b []byte) (*Script, error) {
 type scriptParts []string
 
 func (sps scriptParts) isP2PKH() bool {
-	if sps[0] == opCodeMap[OP_DUP] &&
+	if len(sps) == 5 &&
+		sps[0] == opCodeMap[OP_DUP] &&
 		sps[1] == opCodeMap[OP_HASH160] &&
 		len(sps[2]) == 40 &&
 		sps[3] == opCodeMap[OP_EQUALVERIFY] &&
