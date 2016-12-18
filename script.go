@@ -1,10 +1,6 @@
 package btctx
 
-import (
-	"encoding/hex"
-
-	"github.com/m0t0k1ch1/base58"
-)
+import "encoding/hex"
 
 type Script struct {
 	Hex       string   `json:"hex"`
@@ -35,6 +31,7 @@ func (sps scriptParts) isP2PKH() bool {
 		len(sps[2]) == 40 &&
 		sps[3] == opCodeMap[OP_EQUALVERIFY] &&
 		sps[4] == opCodeMap[OP_CHECKSIG] {
+
 		return true
 	}
 
@@ -43,27 +40,9 @@ func (sps scriptParts) isP2PKH() bool {
 
 func (sps scriptParts) extractAddresses() ([]string, error) {
 	if sps.isP2PKH() {
-		pkHashBytes, err := hex.DecodeString(sps[2])
-		if err != nil {
-			return nil, err
-		}
+		pkh := PubKeyHash(sps[2])
 
-		if isTestNet() {
-			pkHashBytes = append([]byte{0x6f}, pkHashBytes...)
-		} else {
-			pkHashBytes = append([]byte{0x00}, pkHashBytes...)
-		}
-
-		doubleHashBytes, err := sha256Double(pkHashBytes)
-		if err != nil {
-			return nil, err
-		}
-
-		checksumBytes := doubleHashBytes[0:4]
-		addressBytes := append(pkHashBytes, checksumBytes...)
-
-		b58 := base58.NewBitcoinBase58()
-		address, err := b58.EncodeToString(addressBytes)
+		address, err := pkh.ToAddress()
 		if err != nil {
 			return nil, err
 		}
