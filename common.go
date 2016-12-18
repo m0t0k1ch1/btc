@@ -5,9 +5,26 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"io"
+	"os"
 )
 
-var IsTestNet = false
+const (
+	NetworkEnvKey  = "BTCTX_NETWORK"
+	NetworkEnvMain = "mainnet"
+	NetworkEnvTest = "testnet"
+)
+
+func UseTestnet() error {
+	return os.Setenv(NetworkEnvKey, NetworkEnvTest)
+}
+
+func isTestNet() bool {
+	if os.Getenv(NetworkEnvKey) == NetworkEnvTest {
+		return true
+	}
+
+	return false
+}
 
 func sha256Double(b []byte) ([]byte, error) {
 	h := sha256.New()

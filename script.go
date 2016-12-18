@@ -47,8 +47,9 @@ func (sps scriptParts) extractAddresses() ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		if IsTestNet {
-			pkHashBytes = append([]byte{0x6F}, pkHashBytes...)
+
+		if isTestNet() {
+			pkHashBytes = append([]byte{0x6f}, pkHashBytes...)
 		} else {
 			pkHashBytes = append([]byte{0x00}, pkHashBytes...)
 		}
