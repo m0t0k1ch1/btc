@@ -6,7 +6,7 @@ type Script struct {
 	Hex       string   `json:"hex"`
 	Asm       string   `json:"asm"`
 	Addresses []string `json:"addresses"`
-	Data      [][]byte `json:"-"`
+	Data      []string `json:"data"`
 }
 
 func NewScriptFromHex(s string) (*Script, error) {

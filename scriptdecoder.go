@@ -28,7 +28,7 @@ func (sd *scriptDecoder) decodeOP() (OP, error) {
 	return OP(b), nil
 }
 
-func (sd *scriptDecoder) decodePushData(op OP) ([]string, []byte, error) {
+func (sd *scriptDecoder) decodePushData(op OP) ([]string, string, error) {
 	parts := []string{}
 	var len uint
 
@@ -37,21 +37,21 @@ func (sd *scriptDecoder) decodePushData(op OP) ([]string, []byte, error) {
 		parts = append(parts, opCodeMap[OP_PUSHDATA1])
 		len8, err := sd.readByte()
 		if err != nil {
-			return nil, nil, err
+			return nil, "", err
 		}
 		len = uint(len8)
 	case OP_PUSHDATA2:
 		parts = append(parts, opCodeMap[OP_PUSHDATA2])
 		len16, err := sd.readUint16()
 		if err != nil {
-			return nil, nil, err
+			return nil, "", err
 		}
 		len = uint(len16)
 	case OP_PUSHDATA4:
 		parts = append(parts, opCodeMap[OP_PUSHDATA4])
 		len32, err := sd.readUint32()
 		if err != nil {
-			return nil, nil, err
+			return nil, "", err
 		}
 		len = uint(len32)
 	default:
@@ -60,22 +60,17 @@ func (sd *scriptDecoder) decodePushData(op OP) ([]string, []byte, error) {
 
 	dataHex, err := sd.readHex(len)
 	if err != nil {
-		return nil, nil, err
+		return nil, "", err
 	}
 	parts = append(parts, dataHex)
 
-	dataBytes, err := hex.DecodeString(dataHex)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return parts, dataBytes, nil
+	return parts, dataHex, nil
 }
 
-func (sd *scriptDecoder) decodePart() ([]string, []byte, error) {
+func (sd *scriptDecoder) decodePart() ([]string, string, error) {
 	op, err := sd.decodeOP()
 	if err != nil {
-		return nil, nil, err
+		return nil, "", err
 	}
 
 	if op.isPushData() {
@@ -84,18 +79,18 @@ func (sd *scriptDecoder) decodePart() ([]string, []byte, error) {
 
 	opCode, ok := opCodeMap[op]
 	if !ok {
-		return nil, nil, ErrUnknownOperationCode
+		return nil, "", ErrUnknownOperationCode
 	}
 
-	return []string{opCode}, nil, nil
+	return []string{opCode}, "", nil
 }
 
 func (sd *scriptDecoder) decode() (*Script, error) {
 	sps := scriptParts{}
-	data := [][]byte{}
+	data := []string{}
 
 	for {
-		parts, dataBytes, err := sd.decodePart()
+		parts, dataHex, err := sd.decodePart()
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -105,8 +100,8 @@ func (sd *scriptDecoder) decode() (*Script, error) {
 
 		sps = append(sps, parts...)
 
-		if dataBytes != nil {
-			data = append(data, dataBytes)
+		if len(dataHex) > 0 {
+			data = append(data, dataHex)
 		}
 	}
 

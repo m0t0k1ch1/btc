@@ -58,7 +58,11 @@ func main() {
       "sigScript": {
         "hex": "473044022065fe1ea4e94a9b44fb62c2b874b63a947504273a60b99b8f7bbf77b4db9331b002205559d8ee93cf341d75866f9eb912af05904fb6eed7372a837308c4e37f3ab58f012103bae5f04799c40862358560e42e441c3080b997a3dec161dd40395e992362bfc9",
         "asm": "3044022065fe1ea4e94a9b44fb62c2b874b63a947504273a60b99b8f7bbf77b4db9331b002205559d8ee93cf341d75866f9eb912af05904fb6eed7372a837308c4e37f3ab58f01 03bae5f04799c40862358560e42e441c3080b997a3dec161dd40395e992362bfc9",
-        "addresses": null
+        "addresses": null,
+        "data": [
+          "3044022065fe1ea4e94a9b44fb62c2b874b63a947504273a60b99b8f7bbf77b4db9331b002205559d8ee93cf341d75866f9eb912af05904fb6eed7372a837308c4e37f3ab58f01",
+          "03bae5f04799c40862358560e42e441c3080b997a3dec161dd40395e992362bfc9"
+        ]
       },
       "sequence": 4294967294
     }
@@ -71,6 +75,9 @@ func main() {
         "asm": "OP_DUP OP_HASH160 cbc222711a230ecdd9a5aa65b61ed39c24db2b34 OP_EQUALVERIFY OP_CHECKSIG",
         "addresses": [
           "mz6L2hYM8jPR5nhH6kEsc3DQFiSDA1Jqpa"
+        ],
+        "data": [
+          "cbc222711a230ecdd9a5aa65b61ed39c24db2b34"
         ]
       }
     },
@@ -81,6 +88,9 @@ func main() {
         "asm": "OP_DUP OP_HASH160 426c1ad9fa94f9ea3e6f9248b8bff6768e3ac8c4 OP_EQUALVERIFY OP_CHECKSIG",
         "addresses": [
           "mmaAPyTMoK3p1K7qCYytuSRRQMPCbrUAMN"
+        ],
+        "data": [
+          "426c1ad9fa94f9ea3e6f9248b8bff6768e3ac8c4"
         ]
       }
     }
