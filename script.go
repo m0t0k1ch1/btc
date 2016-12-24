@@ -52,5 +52,5 @@ func (sps scriptParts) extractAddresses() ([]string, error) {
 		return []string{address}, nil
 	}
 
-	return nil, nil
+	return []string{}, nil
 }
