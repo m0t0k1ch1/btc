@@ -2,9 +2,13 @@ package btctx
 
 import (
 	"encoding/hex"
-	"fmt"
+	"errors"
 	"io"
 	"strings"
+)
+
+var (
+	ErrUnknownOperationCode = errors.New("unknown operation code")
 )
 
 type scriptDecoder struct {
@@ -24,7 +28,7 @@ func (sd *scriptDecoder) decodeOP() (OP, error) {
 	return OP(b), nil
 }
 
-func (sd *scriptDecoder) decodePushData(op OP) ([]string, error) {
+func (sd *scriptDecoder) decodePushData(op OP) ([]string, []byte, error) {
 	parts := []string{}
 	var len uint
 
@@ -33,39 +37,45 @@ func (sd *scriptDecoder) decodePushData(op OP) ([]string, error) {
 		parts = append(parts, opCodeMap[OP_PUSHDATA1])
 		len8, err := sd.readByte()
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		len = uint(len8)
 	case OP_PUSHDATA2:
 		parts = append(parts, opCodeMap[OP_PUSHDATA2])
 		len16, err := sd.readUint16()
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		len = uint(len16)
 	case OP_PUSHDATA4:
 		parts = append(parts, opCodeMap[OP_PUSHDATA4])
 		len32, err := sd.readUint32()
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		len = uint(len32)
 	default:
 		len = uint(op)
 	}
 
-	data, err := sd.readHex(len)
+	dataHex, err := sd.readHex(len)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+	parts = append(parts, dataHex)
+
+	dataBytes, err := hex.DecodeString(dataHex)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	return append(parts, data), nil
+	return parts, dataBytes, nil
 }
 
-func (sd *scriptDecoder) decodePart() ([]string, error) {
+func (sd *scriptDecoder) decodePart() ([]string, []byte, error) {
 	op, err := sd.decodeOP()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	if op.isPushData() {
@@ -74,17 +84,18 @@ func (sd *scriptDecoder) decodePart() ([]string, error) {
 
 	opCode, ok := opCodeMap[op]
 	if !ok {
-		return nil, fmt.Errorf("unknown operation code")
+		return nil, nil, ErrUnknownOperationCode
 	}
 
-	return []string{opCode}, nil
+	return []string{opCode}, nil, nil
 }
 
 func (sd *scriptDecoder) decode() (*Script, error) {
 	sps := scriptParts{}
+	data := [][]byte{}
 
 	for {
-		parts, err := sd.decodePart()
+		parts, dataBytes, err := sd.decodePart()
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -93,6 +104,10 @@ func (sd *scriptDecoder) decode() (*Script, error) {
 		}
 
 		sps = append(sps, parts...)
+
+		if dataBytes != nil {
+			data = append(data, dataBytes)
+		}
 	}
 
 	addresses, _ := sps.extractAddresses()
@@ -101,5 +116,6 @@ func (sd *scriptDecoder) decode() (*Script, error) {
 		Hex:       hex.EncodeToString(sd.data),
 		Asm:       strings.Join(sps, " "),
 		Addresses: addresses,
+		Data:      data,
 	}, nil
 }
