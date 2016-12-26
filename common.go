@@ -52,10 +52,19 @@ func writeVarInt(w io.Writer, data uint) error {
 	if data < 0xfd {
 		return writeData(w, byte(data))
 	} else if data <= 0xffff {
+		if err := writeData(w, byte(0xfd)); err != nil {
+			return err
+		}
 		return writeData(w, uint16(data))
 	} else if data <= 0xffffffff {
+		if err := writeData(w, byte(0xfe)); err != nil {
+			return err
+		}
 		return writeData(w, uint32(data))
 	} else {
+		if err := writeData(w, byte(0xff)); err != nil {
+			return err
+		}
 		return writeData(w, uint64(data))
 	}
 }
