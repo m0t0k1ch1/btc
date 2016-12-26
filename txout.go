@@ -11,8 +11,8 @@ type TxOut struct {
 	PkScript *Script `json:"pkScript"`
 }
 
-func NewTxOut(value int64, PkScriptHex string) (*TxOut, error) {
-	pkScript, err := NewScriptFromHex(PkScriptHex)
+func NewTxOut(value int64, pkScriptHex string) (*TxOut, error) {
+	pkScript, err := NewScriptFromHex(pkScriptHex)
 	if err != nil {
 		return nil, err
 	}
