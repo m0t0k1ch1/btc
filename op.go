@@ -6,6 +6,7 @@ const (
 	OP_PUSHDATA1   OP = 0x4c
 	OP_PUSHDATA2   OP = 0x4d
 	OP_PUSHDATA4   OP = 0x4e
+	OP_RETURN      OP = 0x6a
 	OP_DROP        OP = 0x75
 	OP_DUP         OP = 0x76
 	OP_EQUALVERIFY OP = 0x88
@@ -18,6 +19,7 @@ var opCodeMap = map[OP]string{
 	OP_PUSHDATA1:   "OP_PUSHDATA1",
 	OP_PUSHDATA2:   "OP_PUSHDATA2",
 	OP_PUSHDATA4:   "OP_PUSHDATA4",
+	OP_RETURN:      "OP_RETURN",
 	OP_DROP:        "OP_DROP",
 	OP_DUP:         "OP_DUP",
 	OP_EQUALVERIFY: "OP_EQUALVERIFY",
