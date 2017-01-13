@@ -1,8 +1,8 @@
 hash: 70ad048fdac5a87911fc662dfdd169b39248c194d12725fbf4cd2bfcef843795
-updated: 2016-12-19T02:06:59.591953519+09:00
+updated: 2017-01-13T19:34:51.777031339+09:00
 imports:
 - name: github.com/m0t0k1ch1/base58
-  version: 55b38f9358a7b1bddebcd1f6d18dff7a14f1fdd6
+  version: ab7c4909b54631bb88882854910f406f276ff4b7
 - name: github.com/stretchr/testify
   version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
   subpackages:
