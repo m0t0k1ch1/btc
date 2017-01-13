@@ -21,9 +21,14 @@ var (
 )
 
 func IsValidAddressVersion(version byte) bool {
-	if version == AddressVersionMain ||
-		version == AddressVersionTest {
-		return true
+	if isTestNet() {
+		if version == AddressVersionTest {
+			return true
+		}
+	} else {
+		if version == AddressVersionMain {
+			return true
+		}
 	}
 
 	return false
