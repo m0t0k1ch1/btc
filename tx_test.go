@@ -27,11 +27,11 @@ func TestTxMapping(t *testing.T) {
 	assert.Equal(t, txIn0.Sequence, uint32(4294967294))
 
 	txOut0 := tx.TxOuts[0]
-	assert.Equal(t, txOut0.Value, int64(5000000000))
+	assert.Equal(t, txOut0.Value, Satoshi(5000000000))
 	assert.Equal(t, txOut0.PkScript.Hex, "76a914cbc222711a230ecdd9a5aa65b61ed39c24db2b3488ac")
 
 	txOut1 := tx.TxOuts[1]
-	assert.Equal(t, txOut1.Value, int64(124999929280))
+	assert.Equal(t, txOut1.Value, Satoshi(124999929280))
 	assert.Equal(t, txOut1.PkScript.Hex, "76a914426c1ad9fa94f9ea3e6f9248b8bff6768e3ac8c488ac")
 
 	txid, err := tx.ToHash()

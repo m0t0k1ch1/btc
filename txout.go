@@ -7,7 +7,7 @@ import (
 )
 
 type TxOut struct {
-	Value    int64   `json:"value"`
+	Value    Satoshi `json:"value"`
 	PkScript *Script `json:"pkScript"`
 }
 
@@ -18,7 +18,7 @@ func NewTxOut(value int64, pkScriptHex string) (*TxOut, error) {
 	}
 
 	return &TxOut{
-		Value:    value,
+		Value:    Satoshi(value),
 		PkScript: pkScript,
 	}, nil
 }

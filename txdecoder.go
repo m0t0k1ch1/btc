@@ -109,7 +109,7 @@ func (txd *txDecoder) decodeTxOut() (*TxOut, error) {
 	}
 
 	return &TxOut{
-		Value:    value,
+		Value:    Satoshi(value),
 		PkScript: pkScript,
 	}, nil
 }

@@ -9,10 +9,18 @@ import (
 )
 
 const (
+	SatoshiPerBtc = 100000000
+
 	NetworkEnvKey  = "BTCTX_NETWORK"
 	NetworkEnvMain = "mainnet"
 	NetworkEnvTest = "testnet"
 )
+
+type Satoshi int64
+
+func (satoshi Satoshi) toBtc() float64 {
+	return float64(satoshi) / SatoshiPerBtc
+}
 
 func UseTestnet() error {
 	return os.Setenv(NetworkEnvKey, NetworkEnvTest)
