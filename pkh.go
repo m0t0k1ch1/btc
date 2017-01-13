@@ -11,8 +11,8 @@ import (
 type PubKeyHash string
 
 const (
-	AddressVersionMain = 0x00
-	AddressVersionTest = 0x6f
+	AddressVersionMain byte = 0x00
+	AddressVersionTest byte = 0x6f
 )
 
 var (
@@ -64,8 +64,12 @@ func NewPkhFromAddress(address string) (PubKeyHash, error) {
 	return PubKeyHash(hex.EncodeToString(pkhBytes[1:21])), nil
 }
 
+func (pkh PubKeyHash) ToString() string {
+	return string(pkh)
+}
+
 func (pkh PubKeyHash) ToAddress() (string, error) {
-	pkhBytes, err := hex.DecodeString(string(pkh))
+	pkhBytes, err := hex.DecodeString(pkh.ToString())
 	if err != nil {
 		return "", err
 	}
