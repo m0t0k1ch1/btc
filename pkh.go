@@ -1,12 +1,63 @@
 package btctx
 
 import (
+	"bytes"
 	"encoding/hex"
+	"errors"
 
 	"github.com/m0t0k1ch1/base58"
 )
 
 type PubKeyHash string
+
+const (
+	AddressVersionMain = 0x00
+	AddressVersionTest = 0x6f
+)
+
+var (
+	ErrInvalidAddressVersion = errors.New("invalid address version")
+	ErrInvalidChecksum       = errors.New("invalid checksum")
+)
+
+func IsValidAddressVersion(version byte) bool {
+	if version == AddressVersionMain ||
+		version == AddressVersionTest {
+		return true
+	}
+
+	return false
+}
+
+func NewPkhFromAddress(address string) (PubKeyHash, error) {
+	b58 := base58.NewBitcoinBase58()
+
+	pkhBytes, err := b58.DecodeString(address)
+	if err != nil {
+		return "", err
+	}
+
+	// validate address version byte
+	if !IsValidAddressVersion(pkhBytes[0]) {
+		return "", ErrInvalidAddressVersion
+	}
+
+	checksumBytes := pkhBytes[21:]
+	pkhBytes = pkhBytes[0:21]
+
+	doubleHashBytes, err := sha256Double(pkhBytes)
+	if err != nil {
+		return "", err
+	}
+
+	// validate checksum bytes
+	checksumBytesValid := doubleHashBytes[0:4]
+	if bytes.Compare(checksumBytes, checksumBytesValid) != 0 {
+		return "", ErrInvalidChecksum
+	}
+
+	return PubKeyHash(hex.EncodeToString(pkhBytes[1:21])), nil
+}
 
 func (pkh PubKeyHash) ToAddress() (string, error) {
 	pkhBytes, err := hex.DecodeString(string(pkh))
@@ -15,9 +66,9 @@ func (pkh PubKeyHash) ToAddress() (string, error) {
 	}
 
 	if isTestNet() {
-		pkhBytes = append([]byte{0x6f}, pkhBytes...)
+		pkhBytes = append([]byte{AddressVersionTest}, pkhBytes...)
 	} else {
-		pkhBytes = append([]byte{0x00}, pkhBytes...)
+		pkhBytes = append([]byte{AddressVersionMain}, pkhBytes...)
 	}
 
 	doubleHashBytes, err := sha256Double(pkhBytes)
