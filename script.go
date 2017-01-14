@@ -27,7 +27,8 @@ func NewScriptFromBytes(b []byte) (*Script, error) {
 type scriptParts []string
 
 func (sps scriptParts) likeP2PKH() bool {
-	return sps[0] == opCodeMap[OP_DUP] &&
+	return len(sps) >= 5 &&
+		sps[0] == opCodeMap[OP_DUP] &&
 		sps[1] == opCodeMap[OP_HASH160] &&
 		len(sps[2]) == 40 &&
 		sps[3] == opCodeMap[OP_EQUALVERIFY] &&
