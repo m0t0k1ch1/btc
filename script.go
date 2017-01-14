@@ -26,22 +26,16 @@ func NewScriptFromBytes(b []byte) (*Script, error) {
 
 type scriptParts []string
 
-func (sps scriptParts) isP2PKH() bool {
-	if len(sps) == 5 &&
-		sps[0] == opCodeMap[OP_DUP] &&
+func (sps scriptParts) likeP2PKH() bool {
+	return sps[0] == opCodeMap[OP_DUP] &&
 		sps[1] == opCodeMap[OP_HASH160] &&
 		len(sps[2]) == 40 &&
 		sps[3] == opCodeMap[OP_EQUALVERIFY] &&
-		sps[4] == opCodeMap[OP_CHECKSIG] {
-
-		return true
-	}
-
-	return false
+		sps[4] == opCodeMap[OP_CHECKSIG]
 }
 
 func (sps scriptParts) extractAddresses() ([]string, error) {
-	if sps.isP2PKH() {
+	if sps.likeP2PKH() {
 		pkh := PubKeyHash(sps[2])
 
 		address, err := pkh.ToAddress()
