@@ -29,6 +29,10 @@ var opCodeMap = map[OP]string{
 
 type OP byte
 
+func (op OP) ToByte() byte {
+	return byte(op)
+}
+
 func (op OP) isPushData() bool {
 	return (0x01 <= op && op <= 0x4b) ||
 		op == OP_PUSHDATA1 ||
