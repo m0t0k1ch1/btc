@@ -2,6 +2,7 @@ package btctx
 
 import (
 	"bytes"
+	"encoding/binary"
 	"encoding/hex"
 	"errors"
 
@@ -66,6 +67,36 @@ func NewPkhFromAddress(address string) (PubKeyHash, error) {
 
 func (pkh PubKeyHash) ToString() string {
 	return string(pkh)
+}
+
+func (pkh PubKeyHash) ToPkScript() (string, error) {
+	pkhBytes, err := hex.DecodeString(pkh.ToString())
+	if err != nil {
+		return "", err
+	}
+
+	buf := &bytes.Buffer{}
+
+	if err := buf.WriteByte(OP_DUP.ToByte()); err != nil {
+		return "", err
+	}
+	if err := buf.WriteByte(OP_HASH160.ToByte()); err != nil {
+		return "", err
+	}
+	if err := buf.WriteByte(byte(len(pkhBytes))); err != nil {
+		return "", err
+	}
+	if err := binary.Write(buf, binary.LittleEndian, pkhBytes); err != nil {
+		return "", err
+	}
+	if err := buf.WriteByte(OP_EQUALVERIFY.ToByte()); err != nil {
+		return "", err
+	}
+	if err := buf.WriteByte(OP_CHECKSIG.ToByte()); err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(buf.Bytes()), nil
 }
 
 func (pkh PubKeyHash) ToAddress() (string, error) {
