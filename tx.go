@@ -107,7 +107,7 @@ func (tx *Tx) writeAll(w io.Writer) error {
 		return err
 	}
 
-	if err := tx.WriteLockTime(w); err != nil {
+	if err := tx.writeLockTime(w); err != nil {
 		return err
 	}
 
@@ -146,6 +146,6 @@ func (tx *Tx) writeTxOuts(w io.Writer) error {
 	return nil
 }
 
-func (tx *Tx) WriteLockTime(w io.Writer) error {
+func (tx *Tx) writeLockTime(w io.Writer) error {
 	return writeData(w, tx.LockTime)
 }
