@@ -25,7 +25,7 @@ func NewTxOut(value int64, pkScriptHex string) (*TxOut, error) {
 
 func (txOut *TxOut) ToBytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
-	if err := txOut.WriteAll(buf); err != nil {
+	if err := txOut.writeAll(buf); err != nil {
 		return nil, err
 	}
 
@@ -41,27 +41,27 @@ func (txOut *TxOut) ToHex() (string, error) {
 	return hex.EncodeToString(b), nil
 }
 
-func (txOut *TxOut) WriteAll(w io.Writer) error {
-	if err := txOut.WriteValue(w); err != nil {
+func (txOut *TxOut) writeAll(w io.Writer) error {
+	if err := txOut.writeValue(w); err != nil {
 		return err
 	}
 
-	if err := txOut.WritePkScriptLength(w); err != nil {
+	if err := txOut.writePkScriptLength(w); err != nil {
 		return err
 	}
 
-	if err := txOut.WritePkScript(w); err != nil {
+	if err := txOut.writePkScript(w); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (txOut *TxOut) WriteValue(w io.Writer) error {
+func (txOut *TxOut) writeValue(w io.Writer) error {
 	return writeData(w, txOut.Value)
 }
 
-func (txOut *TxOut) WritePkScriptLength(w io.Writer) error {
+func (txOut *TxOut) writePkScriptLength(w io.Writer) error {
 	b, err := hex.DecodeString(txOut.PkScript.Hex)
 	if err != nil {
 		return err
@@ -70,6 +70,6 @@ func (txOut *TxOut) WritePkScriptLength(w io.Writer) error {
 	return writeVarInt(w, uint(len(b)))
 }
 
-func (txOut *TxOut) WritePkScript(w io.Writer) error {
+func (txOut *TxOut) writePkScript(w io.Writer) error {
 	return writeHex(w, txOut.PkScript.Hex)
 }

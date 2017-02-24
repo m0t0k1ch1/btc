@@ -33,7 +33,7 @@ func NewTxIn(hash string, index uint32, sigScriptHex string) (*TxIn, error) {
 
 func (txIn *TxIn) ToBytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
-	if err := txIn.WriteAll(buf); err != nil {
+	if err := txIn.writeAll(buf); err != nil {
 		return nil, err
 	}
 
@@ -49,39 +49,39 @@ func (txIn *TxIn) ToHex() (string, error) {
 	return hex.EncodeToString(b), nil
 }
 
-func (txIn *TxIn) WriteAll(w io.Writer) error {
-	if err := txIn.WriteHash(w); err != nil {
+func (txIn *TxIn) writeAll(w io.Writer) error {
+	if err := txIn.writeHash(w); err != nil {
 		return err
 	}
 
-	if err := txIn.WriteIndex(w); err != nil {
+	if err := txIn.writeIndex(w); err != nil {
 		return err
 	}
 
-	if err := txIn.WriteSigScriptLength(w); err != nil {
+	if err := txIn.writeSigScriptLength(w); err != nil {
 		return err
 	}
 
-	if err := txIn.WriteSigScript(w); err != nil {
+	if err := txIn.writeSigScript(w); err != nil {
 		return err
 	}
 
-	if err := txIn.WriteSequence(w); err != nil {
+	if err := txIn.writeSequence(w); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (txIn *TxIn) WriteHash(w io.Writer) error {
+func (txIn *TxIn) writeHash(w io.Writer) error {
 	return writeHexReverse(w, txIn.Hash)
 }
 
-func (txIn *TxIn) WriteIndex(w io.Writer) error {
+func (txIn *TxIn) writeIndex(w io.Writer) error {
 	return writeData(w, txIn.Index)
 }
 
-func (txIn *TxIn) WriteSigScriptLength(w io.Writer) error {
+func (txIn *TxIn) writeSigScriptLength(w io.Writer) error {
 	b, err := hex.DecodeString(txIn.SigScript.Hex)
 	if err != nil {
 		return err
@@ -90,10 +90,10 @@ func (txIn *TxIn) WriteSigScriptLength(w io.Writer) error {
 	return writeVarInt(w, uint(len(b)))
 }
 
-func (txIn *TxIn) WriteSigScript(w io.Writer) error {
+func (txIn *TxIn) writeSigScript(w io.Writer) error {
 	return writeHex(w, txIn.SigScript.Hex)
 }
 
-func (txIn *TxIn) WriteSequence(w io.Writer) error {
+func (txIn *TxIn) writeSequence(w io.Writer) error {
 	return writeData(w, txIn.Sequence)
 }

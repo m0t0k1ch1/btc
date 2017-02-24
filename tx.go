@@ -50,7 +50,7 @@ func (tx *Tx) AddTxOut(txOut *TxOut) {
 
 func (tx *Tx) ToBytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
-	if err := tx.WriteAll(buf); err != nil {
+	if err := tx.writeAll(buf); err != nil {
 		return nil, err
 	}
 
@@ -86,24 +86,24 @@ func (tx *Tx) ToHash() (string, error) {
 	return hex.EncodeToString(buf.Bytes()), nil
 }
 
-func (tx *Tx) WriteAll(w io.Writer) error {
-	if err := tx.WriteVersion(w); err != nil {
+func (tx *Tx) writeAll(w io.Writer) error {
+	if err := tx.writeVersion(w); err != nil {
 		return err
 	}
 
-	if err := tx.WriteTxInCount(w); err != nil {
+	if err := tx.writeTxInCount(w); err != nil {
 		return err
 	}
 
-	if err := tx.WriteTxIns(w); err != nil {
+	if err := tx.writeTxIns(w); err != nil {
 		return err
 	}
 
-	if err := tx.WriteTxOutCount(w); err != nil {
+	if err := tx.writeTxOutCount(w); err != nil {
 		return err
 	}
 
-	if err := tx.WriteTxOuts(w); err != nil {
+	if err := tx.writeTxOuts(w); err != nil {
 		return err
 	}
 
@@ -114,17 +114,17 @@ func (tx *Tx) WriteAll(w io.Writer) error {
 	return nil
 }
 
-func (tx *Tx) WriteVersion(w io.Writer) error {
+func (tx *Tx) writeVersion(w io.Writer) error {
 	return writeData(w, tx.Version)
 }
 
-func (tx *Tx) WriteTxInCount(w io.Writer) error {
+func (tx *Tx) writeTxInCount(w io.Writer) error {
 	return writeVarInt(w, uint(len(tx.TxIns)))
 }
 
-func (tx *Tx) WriteTxIns(w io.Writer) error {
+func (tx *Tx) writeTxIns(w io.Writer) error {
 	for _, txIn := range tx.TxIns {
-		if err := txIn.WriteAll(w); err != nil {
+		if err := txIn.writeAll(w); err != nil {
 			return err
 		}
 	}
@@ -132,13 +132,13 @@ func (tx *Tx) WriteTxIns(w io.Writer) error {
 	return nil
 }
 
-func (tx *Tx) WriteTxOutCount(w io.Writer) error {
+func (tx *Tx) writeTxOutCount(w io.Writer) error {
 	return writeVarInt(w, uint(len(tx.TxOuts)))
 }
 
-func (tx *Tx) WriteTxOuts(w io.Writer) error {
+func (tx *Tx) writeTxOuts(w io.Writer) error {
 	for _, txOut := range tx.TxOuts {
-		if err := txOut.WriteAll(w); err != nil {
+		if err := txOut.writeAll(w); err != nil {
 			return err
 		}
 	}
