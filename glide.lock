@@ -1,13 +1,8 @@
-hash: 91d7a9deedb39cfc82a0dfdfb7afd603ff35ed2ea7a56ac9abb49792d396148b
-updated: 2017-02-25T02:44:10.769557343+09:00
+hash: f6a56132a627e14bfa78c9a1aeb32fda9c0791f2a2eb383e1f75a557ebb5d7c8
+updated: 2017-02-25T02:46:16.027972042+09:00
 imports:
 - name: github.com/m0t0k1ch1/base58
   version: ab7c4909b54631bb88882854910f406f276ff4b7
-- name: github.com/stretchr/testify
-  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
-  subpackages:
-  - assert
-  - require
 testImports:
 - name: github.com/davecgh/go-spew
   version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
@@ -17,3 +12,8 @@ testImports:
   version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
   subpackages:
   - difflib
+- name: github.com/stretchr/testify
+  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  subpackages:
+  - assert
+  - require
