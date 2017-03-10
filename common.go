@@ -20,6 +20,10 @@ const (
 
 type Satoshi int64
 
+func NewSatoshiFromBtc(btc float64) Satoshi {
+	return Satoshi(btc * SatoshiPerBtc)
+}
+
 func (satoshi Satoshi) ToInt64() int64 {
 	return int64(satoshi)
 }
