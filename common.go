@@ -14,6 +14,8 @@ const (
 	NetworkEnvKey  = "BTCTX_NETWORK"
 	NetworkEnvMain = "mainnet"
 	NetworkEnvTest = "testnet"
+
+	CoinBaseTxid = "0000000000000000000000000000000000000000000000000000000000000000"
 )
 
 type Satoshi int64
