@@ -45,13 +45,3 @@ func TestScriptMapping(t *testing.T) {
 		assert.Equal(t, script.Data, testCase.data)
 	}
 }
-
-// ==================================================
-// target script in testnet
-// ==================================================
-// hex:
-// 76a914cbc222711a230ecdd9a5aa65b61ed39c24db2b3488ac
-// --------------------------------------------------
-// asm:
-// OP_DUP OP_HASH160 cbc222711a230ecdd9a5aa65b61ed39c24db2b34 OP_EQUALVERIFY OP_CHECKSIG
-// --------------------------------------------------

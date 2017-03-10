@@ -51,9 +51,17 @@ func (txd *txDecoder) decodeTxIn() (*TxIn, error) {
 	if err != nil {
 		return nil, err
 	}
-	sigScript, err := NewScriptFromHex(sigScriptHex)
-	if err != nil {
-		return nil, err
+
+	var sigScript *Script
+	if hash == CoinBaseTxid {
+		sigScript = &Script{
+			Hex: sigScriptHex,
+		}
+	} else {
+		sigScript, err = NewScriptFromHex(sigScriptHex)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	seq, err := txd.readUint32()
