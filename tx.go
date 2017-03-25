@@ -76,14 +76,8 @@ func (tx *Tx) ToHash() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	hashBytesLen := len(hashBytes)
 
-	buf := &bytes.Buffer{}
-	for i := 1; i <= hashBytesLen; i++ {
-		buf.WriteByte(hashBytes[hashBytesLen-i])
-	}
-
-	return hex.EncodeToString(buf.Bytes()), nil
+	return hex.EncodeToString(reverseBytes(hashBytes)), nil
 }
 
 func (tx *Tx) writeAll(w io.Writer) error {
