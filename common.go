@@ -60,6 +60,18 @@ func sha256Double(b []byte) ([]byte, error) {
 	return h.Sum(nil), nil
 }
 
+func reverseBytes(b []byte) []byte {
+	l := len(b)
+
+	rb := make([]byte, l)
+	for i, j := 0, l-1; i < l; i++ {
+		rb[i] = b[j]
+		j--
+	}
+
+	return rb
+}
+
 func writeData(w io.Writer, data interface{}) error {
 	return binary.Write(w, binary.LittleEndian, data)
 }
@@ -101,14 +113,6 @@ func writeHexReverse(w io.Writer, data string) error {
 	if err != nil {
 		return err
 	}
-	size := len(b)
 
-	reversed := make([]byte, size)
-
-	for i, j := size-1, 0; i >= 0; i-- {
-		reversed[j] = b[i]
-		j++
-	}
-
-	return writeData(w, reversed)
+	return writeData(w, reverseBytes(b))
 }
