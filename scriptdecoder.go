@@ -55,6 +55,7 @@ func (sd *scriptDecoder) decodePushData(op OP) ([]string, []byte, error) {
 		}
 		len = uint(len32)
 	default:
+		// op: 0x01-0x4b (1-75)
 		len = uint(op)
 	}
 
@@ -108,7 +109,7 @@ func (sd *scriptDecoder) decode() (*Script, error) {
 	addresses, _ := sps.extractAddresses()
 
 	return &Script{
-		Hex:       hex.EncodeToString(sd.data),
+		Hex:       hex.EncodeToString(sd.src),
 		Asm:       strings.Join(sps, " "),
 		Addresses: addresses,
 		Data:      data,
