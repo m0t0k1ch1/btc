@@ -7,13 +7,13 @@ import (
 )
 
 type decoder struct {
-	data   []byte
+	src    []byte
 	reader *bytes.Reader
 }
 
 func newDecoder(b []byte) *decoder {
 	return &decoder{
-		data:   b,
+		src:    b,
 		reader: bytes.NewReader(b),
 	}
 }
@@ -168,23 +168,23 @@ func (d *decoder) readVarInt() (uint, error) {
 
 	switch head {
 	case 0xff:
-		val, err := d.readUint64()
+		data, err := d.readUint64()
 		if err != nil {
 			return 0, err
 		}
-		return uint(val), nil
+		return uint(data), nil
 	case 0xfe:
-		val, err := d.readUint32()
+		data, err := d.readUint32()
 		if err != nil {
 			return 0, err
 		}
-		return uint(val), nil
+		return uint(data), nil
 	case 0xfd:
-		val, err := d.readUint16()
+		data, err := d.readUint16()
 		if err != nil {
 			return 0, err
 		}
-		return uint(val), nil
+		return uint(data), nil
 	default:
 		return uint(head), nil
 	}
