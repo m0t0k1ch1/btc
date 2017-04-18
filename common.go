@@ -2,10 +2,7 @@ package btctx
 
 import (
 	"crypto/sha256"
-	"encoding/binary"
-	"encoding/hex"
 	"errors"
-	"io"
 	"os"
 )
 
@@ -18,6 +15,10 @@ const (
 	AddressVersionTest byte = 0x6f
 
 	SatoshiPerBtc = 100000000
+
+	TxVersion    int32  = 1
+	TxLockTime   uint32 = 0
+	TxInSequence uint32 = 4294967295
 
 	CoinBaseTxid = "0000000000000000000000000000000000000000000000000000000000000000"
 )
@@ -79,49 +80,4 @@ func reverseBytes(b []byte) []byte {
 	}
 
 	return rb
-}
-
-func writeData(w io.Writer, data interface{}) error {
-	return binary.Write(w, binary.LittleEndian, data)
-}
-
-// variable length integer
-// ref. https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer
-func writeVarInt(w io.Writer, data uint) error {
-	if data < 0xfd {
-		return writeData(w, byte(data))
-	} else if data <= 0xffff {
-		if err := writeData(w, byte(0xfd)); err != nil {
-			return err
-		}
-		return writeData(w, uint16(data))
-	} else if data <= 0xffffffff {
-		if err := writeData(w, byte(0xfe)); err != nil {
-			return err
-		}
-		return writeData(w, uint32(data))
-	} else {
-		if err := writeData(w, byte(0xff)); err != nil {
-			return err
-		}
-		return writeData(w, uint64(data))
-	}
-}
-
-func writeHex(w io.Writer, data string) error {
-	b, err := hex.DecodeString(data)
-	if err != nil {
-		return err
-	}
-
-	return writeData(w, b)
-}
-
-func writeHexReverse(w io.Writer, data string) error {
-	b, err := hex.DecodeString(data)
-	if err != nil {
-		return err
-	}
-
-	return writeData(w, reverseBytes(b))
 }

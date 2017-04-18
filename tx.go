@@ -1,15 +1,34 @@
 package btctx
 
-import (
-	"bytes"
-	"encoding/hex"
-	"io"
-)
+import "encoding/hex"
 
-const (
-	DefaultTxVersion  int32  = 1
-	DefaultTxLockTime uint32 = 0
-)
+type TxIn struct {
+	Txid     string  `json:"txid"`
+	Index    uint32  `json:"index"`
+	Script   *Script `json:"script"`
+	Sequence uint32  `json:"sequence"`
+}
+
+func NewTxIn(txid string, index uint32, script *Script) *TxIn {
+	return &TxIn{
+		Txid:     txid,
+		Index:    index,
+		Script:   script,
+		Sequence: TxInSequence,
+	}
+}
+
+type TxOut struct {
+	Amount Satoshi `json:"amount"`
+	Script *Script `json:"script"`
+}
+
+func NewTxOut(amount int64, script *Script) *TxOut {
+	return &TxOut{
+		Amount: Satoshi(amount),
+		Script: script,
+	}
+}
 
 type Tx struct {
 	Version  int32    `json:"version"`
@@ -20,8 +39,10 @@ type Tx struct {
 
 func NewTx() *Tx {
 	return &Tx{
-		Version:  DefaultTxVersion,
-		LockTime: DefaultTxLockTime,
+		Version:  TxVersion,
+		TxIns:    []*TxIn{},
+		TxOuts:   []*TxOut{},
+		LockTime: TxLockTime,
 	}
 }
 
@@ -47,12 +68,12 @@ func (tx *Tx) AddTxOut(txOut *TxOut) {
 }
 
 func (tx *Tx) Bytes() ([]byte, error) {
-	buf := &bytes.Buffer{}
-	if err := tx.writeAll(buf); err != nil {
+	w := newTxWriter()
+	if err := w.writeTx(tx); err != nil {
 		return nil, err
 	}
 
-	return buf.Bytes(), nil
+	return w.Bytes(), nil
 }
 
 func (tx *Tx) Hex() (string, error) {
@@ -76,68 +97,4 @@ func (tx *Tx) Txid() (string, error) {
 	}
 
 	return hex.EncodeToString(reverseBytes(hashBytes)), nil
-}
-
-func (tx *Tx) writeAll(w io.Writer) error {
-	if err := tx.writeVersion(w); err != nil {
-		return err
-	}
-
-	if err := tx.writeTxInCount(w); err != nil {
-		return err
-	}
-
-	if err := tx.writeTxIns(w); err != nil {
-		return err
-	}
-
-	if err := tx.writeTxOutCount(w); err != nil {
-		return err
-	}
-
-	if err := tx.writeTxOuts(w); err != nil {
-		return err
-	}
-
-	if err := tx.writeLockTime(w); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (tx *Tx) writeVersion(w io.Writer) error {
-	return writeData(w, tx.Version)
-}
-
-func (tx *Tx) writeTxInCount(w io.Writer) error {
-	return writeVarInt(w, uint(len(tx.TxIns)))
-}
-
-func (tx *Tx) writeTxIns(w io.Writer) error {
-	for _, txIn := range tx.TxIns {
-		if err := txIn.writeAll(w); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (tx *Tx) writeTxOutCount(w io.Writer) error {
-	return writeVarInt(w, uint(len(tx.TxOuts)))
-}
-
-func (tx *Tx) writeTxOuts(w io.Writer) error {
-	for _, txOut := range tx.TxOuts {
-		if err := txOut.writeAll(w); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (tx *Tx) writeLockTime(w io.Writer) error {
-	return writeData(w, tx.LockTime)
 }
