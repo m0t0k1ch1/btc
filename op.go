@@ -1,41 +1,56 @@
 package btctx
 
 const (
-	OP_0           OP = 0x00
-	OP_FALSE       OP = 0x00
-	OP_PUSHDATA1   OP = 0x4c
-	OP_PUSHDATA2   OP = 0x4d
-	OP_PUSHDATA4   OP = 0x4e
-	OP_RETURN      OP = 0x6a
-	OP_DROP        OP = 0x75
-	OP_DUP         OP = 0x76
-	OP_EQUALVERIFY OP = 0x88
-	OP_HASH160     OP = 0xa9
-	OP_CHECKSIG    OP = 0xac
+	OpZero        OpCode = 0x00
+	OpFalse       OpCode = 0x00
+	OpDataLenMin  OpCode = 0x01
+	OpDataLenMax  OpCode = 0x4b
+	OpPushdata1   OpCode = 0x4c
+	OpPushdata2   OpCode = 0x4d
+	OpPushdata4   OpCode = 0x4e
+	OpReturn      OpCode = 0x6a
+	OpDrop        OpCode = 0x75
+	OpDup         OpCode = 0x76
+	OpEqualVerify OpCode = 0x88
+	OpHash160     OpCode = 0xa9
+	OpCheckSig    OpCode = 0xac
 )
 
-var opCodeMap = map[OP]string{
-	OP_0:           "OP_0",
-	OP_PUSHDATA1:   "OP_PUSHDATA1",
-	OP_PUSHDATA2:   "OP_PUSHDATA2",
-	OP_PUSHDATA4:   "OP_PUSHDATA4",
-	OP_RETURN:      "OP_RETURN",
-	OP_DROP:        "OP_DROP",
-	OP_DUP:         "OP_DUP",
-	OP_EQUALVERIFY: "OP_EQUALVERIFY",
-	OP_HASH160:     "OP_HASH160",
-	OP_CHECKSIG:    "OP_CHECKSIG",
+var opCodeNameMap = map[OpCode]string{
+	OpZero:        "OP_0",
+	OpPushdata1:   "OP_PUSHDATA1",
+	OpPushdata2:   "OP_PUSHDATA2",
+	OpPushdata4:   "OP_PUSHDATA4",
+	OpReturn:      "OP_RETURN",
+	OpDrop:        "OP_DROP",
+	OpDup:         "OP_DUP",
+	OpEqualVerify: "OP_EQUALVERIFY",
+	OpHash160:     "OP_HASH160",
+	OpCheckSig:    "OP_CHECKSIG",
 }
 
-type OP byte
+type OpCode byte
 
-func (op OP) ToByte() byte {
+func (op OpCode) Name() string {
+	name, ok := opCodeNameMap[op]
+	if !ok {
+		return ""
+	}
+
+	return name
+}
+
+func (op OpCode) Byte() byte {
 	return byte(op)
 }
 
-func (op OP) isPushData() bool {
-	return (0x01 <= op && op <= 0x4b) ||
-		op == OP_PUSHDATA1 ||
-		op == OP_PUSHDATA2 ||
-		op == OP_PUSHDATA4
+func (op OpCode) isDataLen() bool {
+	return OpDataLenMin <= op && op <= OpDataLenMax
+}
+
+func (op OpCode) isPushData() bool {
+	return op.isDataLen() ||
+		op == OpPushdata1 ||
+		op == OpPushdata2 ||
+		op == OpPushdata4
 }

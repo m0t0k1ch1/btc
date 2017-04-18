@@ -11,27 +11,27 @@ const (
 )
 
 type TxIn struct {
-	Hash      string  `json:"hash"`
-	Index     uint32  `json:"index"`
-	SigScript *Script `json:"sigScript"`
-	Sequence  uint32  `json:"sequence"`
+	Txid     string  `json:"txid"`
+	Index    uint32  `json:"index"`
+	Script   *Script `json:"script"`
+	Sequence uint32  `json:"sequence"`
 }
 
-func NewTxIn(hash string, index uint32, sigScriptHex string) (*TxIn, error) {
-	sigScript, err := NewScriptFromHex(sigScriptHex)
+func NewTxIn(txid string, index uint32, scriptHex string) (*TxIn, error) {
+	script, err := NewScriptFromHex(scriptHex)
 	if err != nil {
 		return nil, err
 	}
 
 	return &TxIn{
-		Hash:      hash,
-		Index:     index,
-		SigScript: sigScript,
-		Sequence:  DefaultTxInSequence,
+		Txid:     txid,
+		Index:    index,
+		Script:   script,
+		Sequence: DefaultTxInSequence,
 	}, nil
 }
 
-func (txIn *TxIn) ToBytes() ([]byte, error) {
+func (txIn *TxIn) Bytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
 	if err := txIn.writeAll(buf); err != nil {
 		return nil, err
@@ -40,8 +40,8 @@ func (txIn *TxIn) ToBytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func (txIn *TxIn) ToHex() (string, error) {
-	b, err := txIn.ToBytes()
+func (txIn *TxIn) Hex() (string, error) {
+	b, err := txIn.Bytes()
 	if err != nil {
 		return "", err
 	}
@@ -74,7 +74,7 @@ func (txIn *TxIn) writeAll(w io.Writer) error {
 }
 
 func (txIn *TxIn) writeHash(w io.Writer) error {
-	return writeHexReverse(w, txIn.Hash)
+	return writeHexReverse(w, txIn.Txid)
 }
 
 func (txIn *TxIn) writeIndex(w io.Writer) error {
@@ -82,7 +82,7 @@ func (txIn *TxIn) writeIndex(w io.Writer) error {
 }
 
 func (txIn *TxIn) writeSigScriptLength(w io.Writer) error {
-	b, err := hex.DecodeString(txIn.SigScript.Hex)
+	b, err := hex.DecodeString(txIn.Script.Hex)
 	if err != nil {
 		return err
 	}
@@ -91,7 +91,7 @@ func (txIn *TxIn) writeSigScriptLength(w io.Writer) error {
 }
 
 func (txIn *TxIn) writeSigScript(w io.Writer) error {
-	return writeHex(w, txIn.SigScript.Hex)
+	return writeHex(w, txIn.Script.Hex)
 }
 
 func (txIn *TxIn) writeSequence(w io.Writer) error {

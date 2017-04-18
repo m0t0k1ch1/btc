@@ -24,9 +24,9 @@ var (
 			1,
 			[]*TxIn{
 				&TxIn{
-					Hash:  "0000000000000000000000000000000000000000000000000000000000000000",
+					Txid:  "0000000000000000000000000000000000000000000000000000000000000000",
 					Index: 4294967295,
-					SigScript: &Script{
+					Script: &Script{
 						Hex: "510101",
 					},
 					Sequence: 4294967295,
@@ -34,8 +34,8 @@ var (
 			},
 			[]*TxOut{
 				&TxOut{
-					Value: Satoshi(2100000000000000),
-					PkScript: &Script{
+					Amount: Satoshi(2100000000000000),
+					Script: &Script{
 						Hex: "76a914267773999b776b6207750a90ba333b83850fffe288ac",
 					},
 				},
@@ -48,9 +48,9 @@ var (
 			1,
 			[]*TxIn{
 				&TxIn{
-					Hash:  "566d4f79fc80b048fb30ea52f7c26893c4edd969946184fae9e734b3e2f23cce",
+					Txid:  "566d4f79fc80b048fb30ea52f7c26893c4edd969946184fae9e734b3e2f23cce",
 					Index: 1,
-					SigScript: &Script{
+					Script: &Script{
 						Hex: "473044022065fe1ea4e94a9b44fb62c2b874b63a947504273a60b99b8f7bbf77b4db9331b002205559d8ee93cf341d75866f9eb912af05904fb6eed7372a837308c4e37f3ab58f012103bae5f04799c40862358560e42e441c3080b997a3dec161dd40395e992362bfc9",
 					},
 					Sequence: 4294967294,
@@ -58,14 +58,14 @@ var (
 			},
 			[]*TxOut{
 				&TxOut{
-					Value: Satoshi(5000000000),
-					PkScript: &Script{
+					Amount: Satoshi(5000000000),
+					Script: &Script{
 						Hex: "76a914cbc222711a230ecdd9a5aa65b61ed39c24db2b3488ac",
 					},
 				},
 				&TxOut{
-					Value: Satoshi(124999929280),
-					PkScript: &Script{
+					Amount: Satoshi(124999929280),
+					Script: &Script{
 						Hex: "76a914426c1ad9fa94f9ea3e6f9248b8bff6768e3ac8c488ac",
 					},
 				},
@@ -87,22 +87,22 @@ func TestTxMapping(t *testing.T) {
 		assert.Equal(t, tx.LockTime, testCase.lockTime)
 
 		for idx, txIn := range tx.TxIns {
-			assert.Equal(t, txIn.Hash, testCase.txIns[idx].Hash)
+			assert.Equal(t, txIn.Txid, testCase.txIns[idx].Txid)
 			assert.Equal(t, txIn.Index, testCase.txIns[idx].Index)
-			assert.Equal(t, txIn.SigScript.Hex, testCase.txIns[idx].SigScript.Hex)
+			assert.Equal(t, txIn.Script.Hex, testCase.txIns[idx].Script.Hex)
 			assert.Equal(t, txIn.Sequence, testCase.txIns[idx].Sequence)
 		}
 
 		for idx, txOut := range tx.TxOuts {
-			assert.Equal(t, txOut.Value, testCase.txOuts[idx].Value)
-			assert.Equal(t, txOut.PkScript.Hex, testCase.txOuts[idx].PkScript.Hex)
+			assert.Equal(t, txOut.Amount, testCase.txOuts[idx].Amount)
+			assert.Equal(t, txOut.Script.Hex, testCase.txOuts[idx].Script.Hex)
 		}
 
-		txid, err := tx.ToHash()
+		txid, err := tx.Txid()
 		require.NoError(t, err)
 		assert.Equal(t, txid, testCase.txid)
 
-		txHex, err := tx.ToHex()
+		txHex, err := tx.Hex()
 		require.NoError(t, err)
 		assert.Equal(t, txHex, testCase.hex)
 	}
