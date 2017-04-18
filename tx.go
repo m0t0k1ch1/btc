@@ -35,9 +35,7 @@ func NewTxFromHex(s string) (*Tx, error) {
 }
 
 func NewTxFromBytes(b []byte) (*Tx, error) {
-	txd := newTxDecoder(b)
-
-	return txd.decode()
+	return newTxReader(b).readTx()
 }
 
 func (tx *Tx) AddTxIn(txIn *TxIn) {
@@ -48,7 +46,7 @@ func (tx *Tx) AddTxOut(txOut *TxOut) {
 	tx.TxOuts = append(tx.TxOuts, txOut)
 }
 
-func (tx *Tx) ToBytes() ([]byte, error) {
+func (tx *Tx) Bytes() ([]byte, error) {
 	buf := &bytes.Buffer{}
 	if err := tx.writeAll(buf); err != nil {
 		return nil, err
@@ -57,8 +55,8 @@ func (tx *Tx) ToBytes() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-func (tx *Tx) ToHex() (string, error) {
-	b, err := tx.ToBytes()
+func (tx *Tx) Hex() (string, error) {
+	b, err := tx.Bytes()
 	if err != nil {
 		return "", err
 	}
@@ -66,8 +64,8 @@ func (tx *Tx) ToHex() (string, error) {
 	return hex.EncodeToString(b), nil
 }
 
-func (tx *Tx) ToHash() (string, error) {
-	txBytes, err := tx.ToBytes()
+func (tx *Tx) Txid() (string, error) {
+	txBytes, err := tx.Bytes()
 	if err != nil {
 		return "", err
 	}

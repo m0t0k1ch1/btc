@@ -4,18 +4,27 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
+	"errors"
 	"io"
 	"os"
 )
 
 const (
+	NetworkTypeEnvKey = "BTCTX_NETWORK"
+	NetworkTypeMain   = "mainnet"
+	NetworkTypeTest   = "testnet"
+
+	AddressVersionMain byte = 0x00
+	AddressVersionTest byte = 0x6f
+
 	SatoshiPerBtc = 100000000
 
-	NetworkEnvKey  = "BTCTX_NETWORK"
-	NetworkEnvMain = "mainnet"
-	NetworkEnvTest = "testnet"
-
 	CoinBaseTxid = "0000000000000000000000000000000000000000000000000000000000000000"
+)
+
+var (
+	ErrInvalidAddressVersion = errors.New("invalid address version")
+	ErrInvalidChecksum       = errors.New("invalid checksum")
 )
 
 type Satoshi int64
@@ -33,11 +42,11 @@ func (satoshi Satoshi) ToBtc() float64 {
 }
 
 func UseTestnet() error {
-	return os.Setenv(NetworkEnvKey, NetworkEnvTest)
+	return os.Setenv(NetworkTypeEnvKey, NetworkTypeTest)
 }
 
 func isTestNet() bool {
-	if os.Getenv(NetworkEnvKey) == NetworkEnvTest {
+	if os.Getenv(NetworkTypeEnvKey) == NetworkTypeTest {
 		return true
 	}
 
