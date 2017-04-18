@@ -1,7 +1,5 @@
 package btctx
 
-import "encoding/hex"
-
 type txWriter struct {
 	*writer
 }
@@ -79,7 +77,7 @@ func (w *txWriter) writeLockTime(lockTime uint32) error {
 }
 
 func (w *txWriter) writeScript(script *Script) error {
-	b, err := hex.DecodeString(script.Hex)
+	b, err := script.Bytes()
 	if err != nil {
 		return err
 	}
