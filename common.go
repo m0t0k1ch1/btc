@@ -33,7 +33,7 @@ func (satoshi Satoshi) Int64() int64 {
 }
 
 func (satoshi Satoshi) Btc() Btc {
-	return Btc(satoshi / SatoshiPerBtc)
+	return Btc(float64(satoshi) / SatoshiPerBtc)
 }
 
 func UseTestnet() error {
