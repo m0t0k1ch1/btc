@@ -32,12 +32,7 @@ var opCodeNameMap = map[OpCode]string{
 type OpCode byte
 
 func (op OpCode) Name() string {
-	name, ok := opCodeNameMap[op]
-	if !ok {
-		return ""
-	}
-
-	return name
+	return opCodeNameMap[op]
 }
 
 func (op OpCode) Byte() byte {
