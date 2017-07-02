@@ -12,3 +12,12 @@ type BlockHeader struct {
 func NewBlockHeaderFromBytes(b []byte) (*BlockHeader, error) {
 	return newBlockReader(b).readBlockHeader()
 }
+
+func (bh *BlockHeader) Bytes() ([]byte, error) {
+	w := newBlockWriter()
+	if err := w.writeBlockHeader(bh); err != nil {
+		return nil, err
+	}
+
+	return w.Bytes(), nil
+}
