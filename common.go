@@ -1,4 +1,4 @@
-package btctx
+package btc
 
 import "os"
 

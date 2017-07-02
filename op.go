@@ -1,4 +1,4 @@
-package btctx
+package btc
 
 const (
 	OpZero        OpCode = 0x00
