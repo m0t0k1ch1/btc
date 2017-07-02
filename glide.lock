@@ -1,5 +1,5 @@
 hash: 24ad44a046ef4b0ef9c8c834814710cba413a5d892c5257869e7f6d881603004
-updated: 2017-04-05T22:48:35.882193479+09:00
+updated: 2017-07-02T15:59:45.628721532+09:00
 imports:
 - name: github.com/m0t0k1ch1/base58
   version: 90e7b7318ab71a04d1875757c70e0b9c4d2e4589
@@ -13,7 +13,7 @@ testImports:
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: 4d4bfba8f1d1027c4fdbe371823030df51419987
+  version: f6abca593680b2315d2075e0f5e2a9751e3f431a
   subpackages:
   - assert
   - require
