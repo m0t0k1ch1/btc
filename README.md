@@ -1,6 +1,6 @@
 # btc
 
-[![GoDoc](https://godoc.org/github.com/m0t0k1ch1/btc?status.svg)](https://godoc.org/github.com/m0t0k1ch1/btc) [![wercker status](https://app.wercker.com/status/18bad0756ae8ad372b622d6ce8b3691c/s/master "wercker status")](https://app.wercker.com/project/byKey/18bad0756ae8ad372b622d6ce8b3691c)
+[![GoDoc](https://godoc.org/github.com/m0t0k1ch1/btc?status.svg)](https://godoc.org/github.com/m0t0k1ch1/btc) [![wercker status](https://app.wercker.com/status/b612fd71f391545fad8da6a7c01ec2b7/s/master "wercker status")](https://app.wercker.com/project/byKey/b612fd71f391545fad8da6a7c01ec2b7)
 
 a package for mapping [bitcoin messages](https://en.bitcoin.it/wiki/Protocol_documentation#Message_types) and golang struct
 
