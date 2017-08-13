@@ -195,7 +195,7 @@ func (w *writer) writePrevBlockhash(prevBlockhash string) error {
 }
 
 func (w *writer) writeMerkleRoot(merkleRoot string) error {
-	return w.writeHex(merkleRoot)
+	return w.writeHexReverse(merkleRoot)
 }
 
 func (w *writer) writeTimestamp(timestamp uint32) error {
