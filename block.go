@@ -26,7 +26,7 @@ func (block *Block) Bytes() ([]byte, error) {
 }
 
 func NewBlockFromBytes(b []byte) (*Block, error) {
-	return newBlockReader(b).readBlock()
+	return newReader(b).readBlock()
 }
 
 type BlockHeader struct {
@@ -48,7 +48,7 @@ func NewBlockHeaderFromHex(s string) (*BlockHeader, error) {
 }
 
 func NewBlockHeaderFromBytes(b []byte) (*BlockHeader, error) {
-	return newBlockReader(b).readBlockHeader()
+	return newReader(b).readBlockHeader()
 }
 
 func (bh *BlockHeader) Bytes() ([]byte, error) {

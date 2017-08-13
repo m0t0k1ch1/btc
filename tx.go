@@ -56,7 +56,7 @@ func NewTxFromHex(s string) (*Tx, error) {
 }
 
 func NewTxFromBytes(b []byte) (*Tx, error) {
-	return newTxReader(b).readTx()
+	return newReader(b).readTx()
 }
 
 func (tx *Tx) AddTxIn(txIn *TxIn) {
