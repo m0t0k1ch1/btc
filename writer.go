@@ -210,7 +210,7 @@ func (w *writer) writeNonce(nonce uint32) error {
 	return w.writeData(nonce)
 }
 
-func (w *writer) writeBlockHeaderBase(bh *BlockHeader) error {
+func (w *writer) writeBlockHeader(bh *BlockHeader) error {
 	if err := w.writeBlockVersion(bh.Version); err != nil {
 		return err
 	}
@@ -238,22 +238,8 @@ func (w *writer) writeBlockHeaderBase(bh *BlockHeader) error {
 	return nil
 }
 
-func (w *writer) writeBlockHeader(bh *BlockHeader) error {
-	if err := w.writeBlockHeaderBase(bh); err != nil {
-		return err
-	}
-
-	// number of transaction entries, this value is always 0
-	// ref. https://en.bitcoin.it/wiki/Protocol_documentation#Block_Headers
-	if err := w.WriteByte(0); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (w *writer) writeBlock(block *Block) error {
-	if err := w.writeBlockHeaderBase(block.BlockHeader); err != nil {
+	if err := w.writeBlockHeader(block.BlockHeader); err != nil {
 		return err
 	}
 

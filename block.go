@@ -65,12 +65,12 @@ func (bh *BlockHeader) Bytes() ([]byte, error) {
 }
 
 func (bh *BlockHeader) Blockhash() (string, error) {
-	w := newWriter()
-	if err := w.writeBlockHeaderBase(bh); err != nil {
+	blockBytes, err := bh.Bytes()
+	if err != nil {
 		return "", err
 	}
 
-	hashBytes, err := sha256Double(w.Bytes())
+	hashBytes, err := sha256Double(blockBytes)
 	if err != nil {
 		return "", err
 	}
