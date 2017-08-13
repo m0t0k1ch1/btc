@@ -17,7 +17,7 @@ func NewScriptFromHex(s string) (*Script, error) {
 }
 
 func NewScriptFromBytes(b []byte) (*Script, error) {
-	return newScriptReader(b).readScript()
+	return newReader(b).readScript()
 }
 
 func (script *Script) Bytes() ([]byte, error) {
