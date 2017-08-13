@@ -68,7 +68,7 @@ func (tx *Tx) AddTxOut(txOut *TxOut) {
 }
 
 func (tx *Tx) Bytes() ([]byte, error) {
-	w := newTxWriter()
+	w := newWriter()
 	if err := w.writeTx(tx); err != nil {
 		return nil, err
 	}

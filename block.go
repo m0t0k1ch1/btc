@@ -17,7 +17,7 @@ func NewBlockFromHex(s string) (*Block, error) {
 }
 
 func (block *Block) Bytes() ([]byte, error) {
-	w := newBlockWriter()
+	w := newWriter()
 	if err := w.writeBlock(block); err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func NewBlockHeaderFromBytes(b []byte) (*BlockHeader, error) {
 }
 
 func (bh *BlockHeader) Bytes() ([]byte, error) {
-	w := newBlockWriter()
+	w := newWriter()
 	if err := w.writeBlockHeader(bh); err != nil {
 		return nil, err
 	}
