@@ -16,6 +16,10 @@ func NewBlockFromHex(s string) (*Block, error) {
 	return NewBlockFromBytes(b)
 }
 
+func NewBlockFromBytes(b []byte) (*Block, error) {
+	return newReader(b).readBlock()
+}
+
 func (block *Block) Bytes() ([]byte, error) {
 	w := newWriter()
 	if err := w.writeBlock(block); err != nil {
@@ -25,8 +29,8 @@ func (block *Block) Bytes() ([]byte, error) {
 	return w.Bytes(), nil
 }
 
-func NewBlockFromBytes(b []byte) (*Block, error) {
-	return newReader(b).readBlock()
+func (block *Block) Blockhash() (string, error) {
+	return block.BlockHeader.Blockhash()
 }
 
 type BlockHeader struct {
@@ -58,4 +62,18 @@ func (bh *BlockHeader) Bytes() ([]byte, error) {
 	}
 
 	return w.Bytes(), nil
+}
+
+func (bh *BlockHeader) Blockhash() (string, error) {
+	w := newWriter()
+	if err := w.writeBlockHeaderBase(bh); err != nil {
+		return "", err
+	}
+
+	hashBytes, err := sha256Double(w.Bytes())
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(reverseBytes(hashBytes)), nil
 }
