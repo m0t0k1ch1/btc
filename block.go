@@ -29,6 +29,15 @@ func (block *Block) Bytes() ([]byte, error) {
 	return w.Bytes(), nil
 }
 
+func (block *Block) Hex() (string, error) {
+	b, err := block.Bytes()
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(b), nil
+}
+
 func (block *Block) Blockhash() (string, error) {
 	return block.BlockHeader.Blockhash()
 }
@@ -62,6 +71,15 @@ func (bh *BlockHeader) Bytes() ([]byte, error) {
 	}
 
 	return w.Bytes(), nil
+}
+
+func (bh *BlockHeader) Hex() (string, error) {
+	b, err := bh.Bytes()
+	if err != nil {
+		return "", err
+	}
+
+	return hex.EncodeToString(b), nil
 }
 
 func (bh *BlockHeader) Blockhash() (string, error) {
