@@ -3,7 +3,7 @@ package btc
 import "os"
 
 const (
-	NetworkTypeEnvKey = "BTC_NETWORK"
+	NetworkTypeEnvKey = "BTC_NETWORK_TYPE"
 	NetworkTypeMain   = "mainnet"
 	NetworkTypeTest   = "testnet"
 
