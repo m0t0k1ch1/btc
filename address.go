@@ -21,7 +21,7 @@ func (pkh Pkh) Address() (Address, error) {
 		b = append([]byte{AddressVersionMain}, b...)
 	}
 
-	doubleHashedBytes, err := sha256Double(b)
+	doubleHashedBytes, err := Sha256Double(b)
 	if err != nil {
 		return "", err
 	}

@@ -88,7 +88,7 @@ func (bh *BlockHeader) Blockhash() (string, error) {
 		return "", err
 	}
 
-	hashBytes, err := sha256Double(blockBytes)
+	hashBytes, err := Sha256Double(blockBytes)
 	if err != nil {
 		return "", err
 	}
