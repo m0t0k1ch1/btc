@@ -91,7 +91,7 @@ func (tx *Tx) Txid() (string, error) {
 		return "", err
 	}
 
-	hashBytes, err := sha256Double(txBytes)
+	hashBytes, err := Sha256Double(txBytes)
 	if err != nil {
 		return "", err
 	}
