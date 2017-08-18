@@ -1,6 +1,9 @@
 package btc
 
-import "os"
+import (
+	"errors"
+	"os"
+)
 
 const (
 	NetworkTypeEnvKey = "BTC_NETWORK_TYPE"
@@ -14,6 +17,15 @@ const (
 	TxInSequence uint32 = 4294967295
 
 	CoinBaseTxid = "0000000000000000000000000000000000000000000000000000000000000000"
+
+	AddressVersionMain byte = 0x00
+	AddressVersionTest byte = 0x6f
+
+	PkhLength = 20
+)
+
+var (
+	ErrInvalidPkhLength = errors.New("invalid pkh length")
 )
 
 type Btc float64
@@ -40,7 +52,7 @@ func UseTestnet() error {
 	return os.Setenv(NetworkTypeEnvKey, NetworkTypeTest)
 }
 
-func isTestNet() bool {
+func isTestnet() bool {
 	if os.Getenv(NetworkTypeEnvKey) == NetworkTypeTest {
 		return true
 	}
