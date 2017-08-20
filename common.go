@@ -21,7 +21,8 @@ const (
 	AddressVersionMain byte = 0x00
 	AddressVersionTest byte = 0x6f
 
-	PkhLength = 20
+	PkhLength    = 20 // 0x14
+	PubKeyLength = 65 // 0x41
 )
 
 var (
