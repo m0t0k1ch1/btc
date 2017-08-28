@@ -1,6 +1,11 @@
 package btc
 
-import "github.com/m0t0k1ch1/base58"
+import (
+	"bytes"
+	"regexp"
+
+	"github.com/m0t0k1ch1/base58"
+)
 
 type Pkh []byte
 
@@ -49,4 +54,28 @@ func (address Address) Pkh() (Pkh, error) {
 	}
 
 	return b[1 : len(b)-4], nil
+}
+
+// ref. https://bitcointalk.org/index.php?topic=1026.0
+func (address Address) IsValid() (bool, error) {
+	s := address.String()
+
+	if ok := regexp.MustCompile(`^[a-zA-Z1-9]{27,35}$`).MatchString(s); !ok {
+		return false, nil
+	}
+
+	b, err := base58.NewBitcoinBase58().DecodeString(s)
+	if err != nil {
+		return false, err
+	}
+
+	doubleHashedBytes, err := Sha256Double(b[:len(b)-4])
+	if err != nil {
+		return false, err
+	}
+	if !bytes.Equal(b[len(b)-4:], doubleHashedBytes[:4]) {
+		return false, nil
+	}
+
+	return true, nil
 }

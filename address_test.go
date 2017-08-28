@@ -38,3 +38,29 @@ func TestPkhAddressConversion(t *testing.T) {
 		assert.Equal(t, hex.EncodeToString(pkh.Bytes()), testCase.pkh)
 	}
 }
+
+type addressValidationTestCase struct {
+	address Address
+	isValid bool
+}
+
+var (
+	addressValidationTestCases = []*addressValidationTestCase{
+		{
+			Address("16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM"),
+			true,
+		},
+		{
+			Address("000000000000000000000000000000000"),
+			false,
+		},
+	}
+)
+
+func TestAddressValidation(t *testing.T) {
+	for _, testCase := range addressValidationTestCases {
+		ok, err := testCase.address.IsValid()
+		require.NoError(t, err)
+		assert.Equal(t, ok, testCase.isValid)
+	}
+}
