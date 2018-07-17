@@ -1,9 +1,0 @@
-package: github.com/m0t0k1ch1/btctx
-import:
-- package: github.com/m0t0k1ch1/base58
-  version: v0.1.0
-testImport:
-- package: github.com/stretchr/testify
-  subpackage:
-  - assert
-  - require
