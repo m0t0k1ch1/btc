@@ -7,13 +7,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type scriptMappingTestCase struct {
-	hex string
-	asm string
-}
+func TestScriptMapping(t *testing.T) {
+	UseTestnet()
 
-var (
-	scriptMappingTestCases = []scriptMappingTestCase{
+	testCases := []struct {
+		hex string
+		asm string
+	}{
 		{
 			"",
 			"",
@@ -23,15 +23,13 @@ var (
 			"OP_DUP OP_HASH160 cbc222711a230ecdd9a5aa65b61ed39c24db2b34 OP_EQUALVERIFY OP_CHECKSIG",
 		},
 	}
-)
 
-func TestScriptMapping(t *testing.T) {
-	UseTestnet()
-
-	for _, testCase := range scriptMappingTestCases {
-		script, err := NewScriptFromHex(testCase.hex)
-		require.NoError(t, err)
-		assert.Equal(t, script.Hex, testCase.hex)
-		assert.Equal(t, script.Asm, testCase.asm)
+	for _, tc := range testCases {
+		t.Run(tc.hex, func(t *testing.T) {
+			script, err := NewScriptFromHex(tc.hex)
+			require.NoError(t, err)
+			assert.Equal(t, script.Hex, tc.hex)
+			assert.Equal(t, script.Asm, tc.asm)
+		})
 	}
 }

@@ -7,17 +7,17 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type txMappingTestCase struct {
-	txid     string
-	hex      string
-	version  int32
-	txIns    []*TxIn
-	txOuts   []*TxOut
-	lockTime uint32
-}
+func TestTxMapping(t *testing.T) {
+	UseTestnet()
 
-var (
-	txMappingTestCases = []txMappingTestCase{
+	testCases := []struct {
+		txid     string
+		hex      string
+		version  int32
+		txIns    []*TxIn
+		txOuts   []*TxOut
+		lockTime uint32
+	}{
 		{
 			"a681519ea2d301638827ad779abcb925f3b2f34aff85d55b08aff7551c152a29",
 			"01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff03510101ffffffff010040075af07507001976a914267773999b776b6207750a90ba333b83850fffe288ac00000000",
@@ -73,37 +73,35 @@ var (
 			1055381,
 		},
 	}
-)
 
-func TestTxMapping(t *testing.T) {
-	UseTestnet()
+	for _, tc := range testCases {
+		t.Run(tc.txid, func(t *testing.T) {
+			tx, err := NewTxFromHex(tc.hex)
+			require.NoError(t, err)
+			assert.Equal(t, tx.Version, tc.version)
+			require.Equal(t, len(tx.TxIns), len(tc.txIns))
+			require.Equal(t, len(tx.TxOuts), len(tc.txOuts))
+			assert.Equal(t, tx.LockTime, tc.lockTime)
 
-	for _, testCase := range txMappingTestCases {
-		tx, err := NewTxFromHex(testCase.hex)
-		require.NoError(t, err)
-		assert.Equal(t, tx.Version, testCase.version)
-		require.Equal(t, len(tx.TxIns), len(testCase.txIns))
-		require.Equal(t, len(tx.TxOuts), len(testCase.txOuts))
-		assert.Equal(t, tx.LockTime, testCase.lockTime)
+			for idx, txIn := range tx.TxIns {
+				assert.Equal(t, txIn.Txid, tc.txIns[idx].Txid)
+				assert.Equal(t, txIn.Index, tc.txIns[idx].Index)
+				assert.Equal(t, txIn.Script.Hex, tc.txIns[idx].Script.Hex)
+				assert.Equal(t, txIn.Sequence, tc.txIns[idx].Sequence)
+			}
 
-		for idx, txIn := range tx.TxIns {
-			assert.Equal(t, txIn.Txid, testCase.txIns[idx].Txid)
-			assert.Equal(t, txIn.Index, testCase.txIns[idx].Index)
-			assert.Equal(t, txIn.Script.Hex, testCase.txIns[idx].Script.Hex)
-			assert.Equal(t, txIn.Sequence, testCase.txIns[idx].Sequence)
-		}
+			for idx, txOut := range tx.TxOuts {
+				assert.Equal(t, txOut.Amount, tc.txOuts[idx].Amount)
+				assert.Equal(t, txOut.Script.Hex, tc.txOuts[idx].Script.Hex)
+			}
 
-		for idx, txOut := range tx.TxOuts {
-			assert.Equal(t, txOut.Amount, testCase.txOuts[idx].Amount)
-			assert.Equal(t, txOut.Script.Hex, testCase.txOuts[idx].Script.Hex)
-		}
+			txid, err := tx.Txid()
+			require.NoError(t, err)
+			assert.Equal(t, txid, tc.txid)
 
-		txid, err := tx.Txid()
-		require.NoError(t, err)
-		assert.Equal(t, txid, testCase.txid)
-
-		txHex, err := tx.Hex()
-		require.NoError(t, err)
-		assert.Equal(t, txHex, testCase.hex)
+			txHex, err := tx.Hex()
+			require.NoError(t, err)
+			assert.Equal(t, txHex, tc.hex)
+		})
 	}
 }

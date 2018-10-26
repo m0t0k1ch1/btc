@@ -8,44 +8,40 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-type pkhAddressConversionTestCase struct {
-	pkh     string
-	address string
-}
-
-var (
-	pkhAddressConversionTestCases = []pkhAddressConversionTestCase{
-		{ // ref. https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses
+func TestPkhAddressConversion(t *testing.T) {
+	testCases := []struct {
+		pkh     string
+		address string
+	}{
+		{
+			// ref. https://en.bitcoin.it/wiki/Technical_background_of_version_1_Bitcoin_addresses
 			"010966776006953d5567439e5e39f86a0d273bee",
 			"16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM",
 		},
 	}
-)
+	for _, tc := range testCases {
+		t.Run(tc.pkh, func(t *testing.T) {
+			b, err := hex.DecodeString(tc.pkh)
+			require.NoError(t, err)
 
-func TestPkhAddressConversion(t *testing.T) {
-	for _, testCase := range pkhAddressConversionTestCases {
-		b, err := hex.DecodeString(testCase.pkh)
-		require.NoError(t, err)
+			// address -> pkh
+			address, err := Pkh(b).Address()
+			require.NoError(t, err)
+			assert.Equal(t, address.String(), tc.address)
 
-		// address -> pkh
-		address, err := Pkh(b).Address()
-		require.NoError(t, err)
-		assert.Equal(t, address.String(), testCase.address)
-
-		// pkh -> address
-		pkh, err := address.Pkh()
-		require.NoError(t, err)
-		assert.Equal(t, hex.EncodeToString(pkh.Bytes()), testCase.pkh)
+			// pkh -> address
+			pkh, err := address.Pkh()
+			require.NoError(t, err)
+			assert.Equal(t, hex.EncodeToString(pkh.Bytes()), tc.pkh)
+		})
 	}
 }
 
-type addressValidationTestCase struct {
-	address Address
-	isValid bool
-}
-
-var (
-	addressValidationTestCases = []*addressValidationTestCase{
+func TestAddressValidation(t *testing.T) {
+	testCases := []struct {
+		address Address
+		isValid bool
+	}{
 		{
 			Address("16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM"),
 			true,
@@ -55,12 +51,12 @@ var (
 			false,
 		},
 	}
-)
 
-func TestAddressValidation(t *testing.T) {
-	for _, testCase := range addressValidationTestCases {
-		ok, err := testCase.address.IsValid()
-		require.NoError(t, err)
-		assert.Equal(t, ok, testCase.isValid)
+	for _, tc := range testCases {
+		t.Run(tc.address.String(), func(t *testing.T) {
+			ok, err := tc.address.IsValid()
+			require.NoError(t, err)
+			assert.Equal(t, ok, tc.isValid)
+		})
 	}
 }
