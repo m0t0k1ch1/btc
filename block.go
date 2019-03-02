@@ -4,7 +4,7 @@ import "encoding/hex"
 
 type Block struct {
 	*BlockHeader
-	Txes []*Tx
+	Txes []*Tx `json:"txes"`
 }
 
 func NewBlockFromHex(s string) (*Block, error) {
@@ -43,12 +43,12 @@ func (block *Block) Blockhash() (string, error) {
 }
 
 type BlockHeader struct {
-	Version       int32
-	PrevBlockhash string
-	MerkleRoot    string
-	Timestamp     uint32
-	Bits          uint32
-	Nonce         uint32
+	Version       int32  `json:"version"`
+	PrevBlockhash string `json:"prevBlock"`
+	MerkleRoot    string `json:"merkleRoot"`
+	Timestamp     uint32 `json:"timestamp"`
+	Bits          uint32 `json:"bits"`
+	Nonce         uint32 `json:"nonce"`
 }
 
 func NewBlockHeaderFromHex(s string) (*BlockHeader, error) {
