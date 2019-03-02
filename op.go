@@ -1,13 +1,15 @@
 package btc
 
 const (
-	OpZero        OpCode = 0x00
+	Op0           OpCode = 0x00
 	OpFalse       OpCode = 0x00
 	OpDataLenMin  OpCode = 0x01
 	OpDataLenMax  OpCode = 0x4b
 	OpPushdata1   OpCode = 0x4c
 	OpPushdata2   OpCode = 0x4d
 	OpPushdata4   OpCode = 0x4e
+	Op1           OpCode = 0x51
+	OpTrue        OpCode = 0x51
 	OpReturn      OpCode = 0x6a
 	OpDrop        OpCode = 0x75
 	OpDup         OpCode = 0x76
@@ -17,7 +19,8 @@ const (
 )
 
 var opCodeNameMap = map[OpCode]string{
-	OpZero:        "OP_0",
+	Op0:           "OP_0",
+	Op1:           "OP_1",
 	OpPushdata1:   "OP_PUSHDATA1",
 	OpPushdata2:   "OP_PUSHDATA2",
 	OpPushdata4:   "OP_PUSHDATA4",
