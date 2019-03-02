@@ -182,7 +182,7 @@ func (r *reader) readVarInt() (uint, error) {
 func (r *reader) readOpCode() (OpCode, error) {
 	b, err := r.ReadByte()
 	if err != nil {
-		return OpZero, err
+		return Op0, err
 	}
 
 	return OpCode(b), nil
